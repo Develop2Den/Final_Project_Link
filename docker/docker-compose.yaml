@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5433/lnkd
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=lt12345
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_PROFILES_ACTIVE=dev
+    ports:
+      - "8989:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  db:
+    image: 'postgres:16.2'
+    container_name: linkedin-test
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=lt12345
+      - POSTGRES_DB=lnkd
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  postgres_data:
+

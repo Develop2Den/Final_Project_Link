@@ -18,7 +18,7 @@ FROM openjdk:21-slim
 WORKDIR /app
 
 # Copy the built JAR file from the previous stage to the container
-COPY --from=build /app/target/testing-app.jar /app/application.jar
+COPY --from=build /app/target/Final_Project_Linkedin.jar /app/application.jar
 
 # Set the command to run the application
 CMD ["java", "-jar", "/app/application.jar"]

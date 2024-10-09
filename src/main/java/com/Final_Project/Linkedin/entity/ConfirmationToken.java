@@ -1,7 +1,6 @@
 package com.Final_Project.Linkedin.entity;
 
-import com.Final_Project.Linkedin.entity.User;
-import com.Final_Project.Linkedin.entity.enums.TokenType;
+import com.Final_Project.Linkedin.utils.enums.TokenType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +16,7 @@ public class ConfirmationToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "token", unique=true)
     private String token;

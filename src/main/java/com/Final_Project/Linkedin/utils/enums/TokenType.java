@@ -1,4 +1,4 @@
-package com.Final_Project.Linkedin.entity.enums;
+package com.Final_Project.Linkedin.utils.enums;
 
 public enum TokenType {
     REGISTRATION,

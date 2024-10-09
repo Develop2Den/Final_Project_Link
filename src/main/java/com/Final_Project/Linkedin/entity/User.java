@@ -1,9 +1,7 @@
 package com.Final_Project.Linkedin.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -21,6 +19,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +32,7 @@ public class User {
     @Column(name = "password")
     private String password;
     @Column(name = "is_verified")
-    private Boolean isVerified;
+    private Boolean isVerified = false;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
@@ -41,6 +40,7 @@ public class User {
     private LocalDateTime deletedAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<ConfirmationToken> tokens = new ArrayList<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -48,4 +48,9 @@ public class User {
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Post> posts;
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }

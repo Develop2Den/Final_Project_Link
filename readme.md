@@ -38,10 +38,12 @@ exit
 ### exit from container
 ```shell
 exit
+```
 
-### text
-spring.security.oauth2.client.registration.google.client-id=C143568406207-v91aosc5q8i018vp87n1j34uhgofvvuo.apps.googleusercontent.com
-spring.security.oauth2.client.registration.google.client-secret=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
+### Пароли для OAuth2  Google Зайти в файл - application-prod.properties и скопировать в него эти строчки (только то, что после равно): 
+```
+client-id=143568406207-ghs0s1apg6pn92a71qu72vgqgcojla5p.apps.googleusercontent.com
+client-secret=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
 ```
 
 

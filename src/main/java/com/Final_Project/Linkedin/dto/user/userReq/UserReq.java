@@ -1,7 +1,7 @@
 package com.Final_Project.Linkedin.dto.user.userReq;
 
 
-import com.Final_Project.Linkedin.password.PasswordValidator;
+import com.Final_Project.Linkedin.utils.password.PasswordValidator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;

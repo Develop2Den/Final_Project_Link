@@ -4,7 +4,7 @@ import com.Final_Project.Linkedin.dto.user.userReq.UserReq;
 import com.Final_Project.Linkedin.entity.ConfirmationToken;
 import com.Final_Project.Linkedin.entity.User;
 import com.Final_Project.Linkedin.utils.enums.TokenType;
-import com.Final_Project.Linkedin.password.PasswordValidator;
+import com.Final_Project.Linkedin.utils.password.PasswordValidator;
 import com.Final_Project.Linkedin.services.authService.AuthEmailService;
 import com.Final_Project.Linkedin.services.tokenService.ConfirmationTokenService;
 import com.Final_Project.Linkedin.services.userService.UserService;
@@ -37,42 +37,37 @@ public class AuthController {
 
     @PostMapping("/auth")
     public ResponseEntity<String> register(@RequestBody @Valid UserReq userRequest) {
-        log.info("Registering with email: {}", userRequest.getEmail());
         if (userService.findUserByEmail(userRequest.getEmail()).isPresent()) {
-            log.warn("User with email {} exists", userRequest.getEmail());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User exists");
         }
-
-        log.info("Регистрация пользователя с паролем: {}", userRequest.getPassword().getPassword());
+        log.info("Реєстрація користувача з паролем: {}", userRequest.getPassword().getPassword());
 
         User newUser = new User(
                 userRequest.getEmail(),
                 passwordEncoder.encode(userRequest.getPassword().getPassword())
         );
-        log.info("Зашифрованный пароль: {}", newUser.getPassword());
         userService.save(newUser);
-        log.info("Successfully registered with email: {}", userRequest.getEmail());
+        log.info("Успішно зареєстровано з електронною адресою: {}", userRequest.getEmail());
 
         String token = confirmationTokenService.createToken(newUser);
         String confirmationLink = "http://localhost:9000/api/confirm?token=" + token;
         authEmailService.sendConfirmationEmail(newUser.getEmail(), confirmationLink);
-        return ResponseEntity.status(HttpStatus.CREATED).body("User registered. Check your email for confirmation.");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Користувач зареєстрований. Перевірте свою електронну пошту для підтвердження.");
     }
 
     @GetMapping("/confirm")
     public String confirmAccount(@RequestParam("token") String token) {
-        log.info("Confirming account with token: {}", token);
+        log.info("Підтвердження облікового запису за допомогою токена: {}", token);
         Optional<ConfirmationToken> confirmationToken = confirmationTokenService.findByTokenAndTokenType(token, TokenType.REGISTRATION);
 
         if (confirmationToken.isPresent()) {
-            log.info("Token found: {}", confirmationToken.get().getToken());
             if (confirmationToken.get().getConfirmedAt() != null) {
-                return "Аккаунт уже подтвержден!";
+                return "Акаунт вже підтверджено!";
             }
 
             LocalDateTime expiresAt = confirmationToken.get().getExpiresAt();
             if (expiresAt.isBefore(LocalDateTime.now())) {
-                return "Срок действия токена истек!";
+                return "Термін дії токена минув!";
             }
 
             confirmationTokenService.setConfirmedAt(token, TokenType.REGISTRATION);
@@ -80,15 +75,15 @@ public class AuthController {
             User user = confirmationToken.get().getUser();
             user.setIsVerified(true);
             userService.save(user);
-            return "Аккаунт успешно подтвержден! Можете закрыть страницу!";
+            return "Акаунт успішно підтверджено! Можете закрити сторінку!";
         } else {
-            return "Токен не найден!";
+            return "Токена не знайдено!";
         }
     }
 
     @PostMapping("/password-forgot")
     public ResponseEntity<String> processForgotPassword(@RequestParam("email") String email) {
-        log.warn("Email: " + email);
+        log.warn("Імейл: " + email);
         Optional<User> user = userService.findUserByEmail(email);
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
@@ -98,23 +93,14 @@ public class AuthController {
         String confirmationLink = "http://localhost:3000/password-reset?token=" + token;
         authEmailService.sendResetEmail(user.get().getEmail(), confirmationLink);
 
-        return ResponseEntity.ok("Письмо для сброса пароля отправлено");
+        return ResponseEntity.ok("Лист для скидання пароля надіслано");
     }
 
     @PostMapping("/password-reset")
     public ResponseEntity<String> resetPassword(@RequestParam("token") String token, @RequestBody PasswordValidator password) {
 
-        log.warn("Attempting to reset password with token: {}", token);
-        log.warn("Password: " + password.getPassword());
-
-//        String actualPassword = "";
-//        String[] parts = password.split(":");
-//
-//        // Проверяем, что строка содержит двоеточие и у нас есть хотя бы два элемента
-//        if (parts.length == 2 && parts[0].equals("password")) {
-//            actualPassword = parts[1];
-//            log.warn("Extracted password: {}", actualPassword);
-//        }
+        log.warn("Спроба скинути пароль за допомогою маркера: {}", token);
+        log.warn("Пароль: " + password.getPassword());
 
         ConfirmationToken resetToken = confirmationTokenService.findByTokenAndTokenType(token, TokenType.PASSWORD_RESET)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid or expired token"));
@@ -124,19 +110,14 @@ public class AuthController {
         }
 
         User user = resetToken.getUser();
-        log.info("Регистрация пользователя с паролем: {}", user.getPassword());
         user.setPassword(passwordEncoder.encode(password.getPassword()));
-        log.info("Зашифрованный пароль: {}", user.getPassword());
-
         userService.save(user);
 
-
-        // Удаляем токен после успешного сброса
         confirmationTokenService.deleteConfirmationToken(resetToken.getToken(), TokenType.PASSWORD_RESET);
 
-        log.info("Password successfully reset for user: {}", user.getEmail());
+        log.info("Пароль успішно скинуто для користувача: {}", user.getEmail());
 
-        return ResponseEntity.ok("Password has been reset successfully");
+        return ResponseEntity.ok("Пароль успішно скинуто");
     }
 
 }

@@ -1,4 +1,4 @@
-package com.Final_Project.Linkedin.password;
+package com.Final_Project.Linkedin.utils.password;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

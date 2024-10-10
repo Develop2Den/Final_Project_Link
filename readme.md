@@ -38,6 +38,10 @@ exit
 ### exit from container
 ```shell
 exit
+
+### text
+spring.security.oauth2.client.registration.google.client-id=C143568406207-v91aosc5q8i018vp87n1j34uhgofvvuo.apps.googleusercontent.com
+spring.security.oauth2.client.registration.google.client-secret=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
 ```
 
 

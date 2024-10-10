@@ -7,20 +7,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
 public class UserFacade {
 
-   private final UserService userService;
-   @Autowired
    private final PasswordEncoder passwordEncoder;
+   private final UserService userService;
    private final ModelMapper modelMapper;
 
     public UserRes createUser(UserReq userReq) {
@@ -35,6 +39,25 @@ public class UserFacade {
 
         User savedUser = userService.save(user);
         return modelMapper.map(savedUser, UserRes.class);
+    }
+
+    public UserRes updateUser(Integer id, UserReq userReq) {
+        User user = modelMapper.map(userReq, User.class);
+        user.setUserId(id);
+        User updatedUser = userService.updateUser(id, new User(
+                user.getEmail(),
+                passwordEncoder.encode(user.getPassword())
+        ));
+        return updatedUser != null ? modelMapper.map(updatedUser, UserRes.class) : null;
+    }
+
+    public UserRes getUser(Integer id) {
+        User user = userService.getOne(id);
+        return user != null ? modelMapper.map(user, UserRes.class) : null;
+    }
+
+    public boolean deleteUser(Integer id) {
+        return userService.deleteById(id);
     }
 
     public UserRes getCurrentUser(String email) {

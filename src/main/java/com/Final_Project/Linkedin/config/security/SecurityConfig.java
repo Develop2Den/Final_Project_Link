@@ -1,4 +1,4 @@
-package com.Final_Project.Linkedin.security;
+package com.Final_Project.Linkedin.config.security;
 
 import com.Final_Project.Linkedin.entity.User;
 import com.Final_Project.Linkedin.services.userService.UserService;
@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,13 +38,21 @@ public class SecurityConfig {
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/login", "/api/auth", "/","/api/confirm", "/oauth2/**", "api/password-forgot", "api/password-reset").permitAll()
+                        .requestMatchers(
+                                "/api/login",
+                                "/api/auth",
+                                "/",
+                                "/api/confirm",
+                                "/oauth2/**",
+                                "api/password-forgot",
+                                "api/password-reset")
+                        .permitAll()
                         .requestMatchers("/api/user/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/api/login")
-                        .defaultSuccessUrl("/api/user", true)
+                        .defaultSuccessUrl("http://localhost:3000/customer", true)
                         .permitAll()
                 )
                 .formLogin(form -> form
@@ -86,11 +96,18 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(UserService userService) {
         return email -> {
-            log.info("Attempting to load user by email: {}", email);
+
+            Boolean isVerified = userService.isUserVerified(email);
+            if (isVerified == null || !isVerified) {
+                log.warn("Юзер не подтвержден: {}", email);
+                throw new BadCredentialsException("Почта не подтверждена!.");
+            }
+
             User user = userService.findUserByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            log.warn("Email: {}", email);
+
+            log.warn("Имейл: {}", email);
             log.warn("Зашифрованный пароль из базы данных: {}", user.getPassword());
 
             return org.springframework.security.core.userdetails.User.builder()

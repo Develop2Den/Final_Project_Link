@@ -20,8 +20,7 @@ public class UserController {
     private final UserFacade userFacade;
 
     @PostMapping
-    public ResponseEntity<UserRes> createCustomer(@Valid @RequestBody UserReq userRequest) {
-        log.info("Creating user with request: {}", userRequest);
+    public ResponseEntity<UserRes> createUser(@Valid @RequestBody UserReq userRequest) {
         try {
             UserRes userResponse = userFacade.createUser(userRequest);
             log.info("User created successfully: {}", userResponse);
@@ -35,7 +34,6 @@ public class UserController {
     @GetMapping
     public ResponseEntity<UserRes> getCurrentUser(Authentication authentication) {
         String email = authentication.getName();
-        log.info("Retrieving current user");
         UserRes userResponse = userFacade.getCurrentUser(email);
         if (userResponse != null) {
             log.info("Current user retrieved: {}", userResponse);

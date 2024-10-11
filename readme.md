@@ -40,5 +40,11 @@ exit
 exit
 ```
 
+### Пароли для OAuth2  Google Зайти в файл - application-prod.properties и скопировать в него эти строчки (только то, что после равно): 
+```
+id=143568406207-ghs0s1apg6pn92a71qu72vgqgcojla5p.apps.googleusercontent.com
+secret=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
+```
+
 
 

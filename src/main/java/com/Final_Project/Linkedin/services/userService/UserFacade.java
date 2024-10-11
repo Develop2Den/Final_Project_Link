@@ -41,7 +41,7 @@ public class UserFacade {
         return modelMapper.map(savedUser, UserRes.class);
     }
 
-    public UserRes updateUser(Integer id, UserReq userReq) {
+    public UserRes updateUser(Long id, UserReq userReq) {
         User user = modelMapper.map(userReq, User.class);
         user.setUserId(id);
         User updatedUser = userService.updateUser(id, new User(
@@ -51,12 +51,12 @@ public class UserFacade {
         return updatedUser != null ? modelMapper.map(updatedUser, UserRes.class) : null;
     }
 
-    public UserRes getUser(Integer id) {
+    public UserRes getUser(Long id) {
         User user = userService.getOne(id);
         return user != null ? modelMapper.map(user, UserRes.class) : null;
     }
 
-    public boolean deleteUser(Integer id) {
+    public boolean deleteUser(Long id) {
         return userService.deleteById(id);
     }
 

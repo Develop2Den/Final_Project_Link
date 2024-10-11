@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class UserRes {
 
-    private Integer id;
+    private Long id;
     private String email;
     private Boolean isVerified;
 

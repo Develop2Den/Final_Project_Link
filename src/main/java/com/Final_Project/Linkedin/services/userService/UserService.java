@@ -29,7 +29,7 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public User updateUser(Integer id, User user) {
+    public User updateUser(Long id, User user) {
         if (userRepository.existsById(id)) {
             user.setUserId(id);
             return userRepository.save(user);
@@ -37,7 +37,7 @@ public class UserService {
         return null;
     }
 
-    public boolean deleteById(Integer id) {
+    public boolean deleteById(Long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
             return true;
@@ -45,7 +45,7 @@ public class UserService {
         return false;
     }
 
-    public User getOne(Integer id) {
+    public User getOne(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 

@@ -53,7 +53,7 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    @Scheduled(cron = "0 0/15 * * * *")
+    @Scheduled(cron = "0 0/20 * * * *")
     @Transactional
     public void removeUnverifiedUsers() {
         LocalDateTime now = LocalDateTime.now();
@@ -61,7 +61,7 @@ public class UserService {
 
         if (!unverifiedUsers.isEmpty()) {
             userRepository.deleteAll(unverifiedUsers);
-            System.out.println("Deleted " + unverifiedUsers.size() + " unverified users with expired tokens");
+            log.warn("Deleted " + unverifiedUsers.size() + " unverified users with expired tokens");
         }
     }
 

@@ -16,9 +16,9 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
     ports:
-      - "9090:9000"
+      - "8989:9000"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://app:9000/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -32,7 +32,7 @@ services:
       - POSTGRES_PASSWORD=lt12345
       - POSTGRES_DB=lnkd
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:

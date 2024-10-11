@@ -28,17 +28,17 @@ public class Profile {
     @Column(name = "user_id")
     private Integer userId;
     @Column(name = "name")
-    private String firstName;
+    private String name;
     @Column(name = "last_name")
-    private String lastName;
+    private String surname;
     @Column(name = "birthdate")
     private LocalDateTime birthdate;
-    @Column(name = "avatar")
-    private String avatarUrl;
+    @Column(name = "status")
+    private String status;
     @Column(name = "photo")
     private String headerPhotoUrl;
-    @Column(name = "bio")
-    private String bio;
+    @Column(name = "position")
+    private String position;
     @Column(name = "address")
     private String address;
     @CreationTimestamp

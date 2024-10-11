@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +33,6 @@ public class ProfileController {
     @Operation(summary = "Create new profile", description = "Creates a new profile")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<CreateProfileResp> create(@RequestBody @Valid CreateProfileReq createProfileReq) {
-
         return ResponseEntity.status(HttpStatus.CREATED).body(profileService.createProfile(createProfileReq));
     }
 }

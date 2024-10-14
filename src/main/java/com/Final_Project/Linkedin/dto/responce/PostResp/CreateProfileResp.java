@@ -1,4 +1,4 @@
-package com.Final_Project.Linkedin.dto.responce;
+package com.Final_Project.Linkedin.dto.responce.PostResp;
 
 import jakarta.validation.constraints.NotNull;
 

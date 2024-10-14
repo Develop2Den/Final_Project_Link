@@ -1,7 +1,7 @@
 package com.Final_Project.Linkedin.controller;
 
 import com.Final_Project.Linkedin.dto.request.CreateProfileReq;
-import com.Final_Project.Linkedin.dto.responce.CreateProfileResp;
+import com.Final_Project.Linkedin.dto.responce.PostResp.CreateProfileResp;
 import com.Final_Project.Linkedin.service.serviceIR.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

@@ -1,11 +1,8 @@
 package com.Final_Project.Linkedin.controller;
 
-import com.Final_Project.Linkedin.dto.request.CreatePostReq;
-import com.Final_Project.Linkedin.dto.request.CreateProfileReq;
-import com.Final_Project.Linkedin.dto.request.ReadPostReq;
+import com.Final_Project.Linkedin.dto.request.PostReq.CreatePostReq;
+import com.Final_Project.Linkedin.dto.request.PostReq.ReadPostReq;
 import com.Final_Project.Linkedin.dto.responce.CreatePostResponse;
-import com.Final_Project.Linkedin.dto.responce.CreateProfileResp;
-import com.Final_Project.Linkedin.service.serviceIR.PostService;
 import com.Final_Project.Linkedin.service.serviceImpl.PostServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

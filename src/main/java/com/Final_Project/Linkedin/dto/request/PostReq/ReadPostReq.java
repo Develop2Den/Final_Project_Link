@@ -1,4 +1,4 @@
-package com.Final_Project.Linkedin.dto.request;
+package com.Final_Project.Linkedin.dto.request.PostReq;
 
 public class ReadPostReq {
     //author photo , name ,

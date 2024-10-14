@@ -1,9 +1,8 @@
 package com.Final_Project.Linkedin.service.serviceImpl;
 
-import com.Final_Project.Linkedin.dto.request.CreatePostReq;
-import com.Final_Project.Linkedin.dto.request.ReadPostReq;
+import com.Final_Project.Linkedin.dto.request.PostReq.CreatePostReq;
+import com.Final_Project.Linkedin.dto.request.PostReq.ReadPostReq;
 import com.Final_Project.Linkedin.dto.responce.CreatePostResponse;
-import com.Final_Project.Linkedin.entity.Post;
 import com.Final_Project.Linkedin.repository.PostRepository;
 import com.Final_Project.Linkedin.service.serviceIR.PostService;
 import lombok.RequiredArgsConstructor;

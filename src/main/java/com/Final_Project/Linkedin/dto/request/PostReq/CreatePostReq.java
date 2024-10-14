@@ -1,4 +1,4 @@
-package com.Final_Project.Linkedin.dto.request;
+package com.Final_Project.Linkedin.dto.request.PostReq;
 
 import jakarta.validation.constraints.NotNull;
 

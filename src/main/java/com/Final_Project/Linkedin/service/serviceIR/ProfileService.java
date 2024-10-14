@@ -1,7 +1,7 @@
 package com.Final_Project.Linkedin.service.serviceIR;
 
 import com.Final_Project.Linkedin.dto.request.CreateProfileReq;
-import com.Final_Project.Linkedin.dto.responce.CreateProfileResp;
+import com.Final_Project.Linkedin.dto.responce.PostResp.CreateProfileResp;
 
 /**
  * description

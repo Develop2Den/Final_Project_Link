@@ -1,0 +1,28 @@
+language: java
+
+# Указываем, что хотим использовать JDK 11 (можно настроить другую версию)
+jdk:
+  - openjdk21
+
+# Настройка фаз сборки и тестирования
+script:
+  - mvn clean install
+  - mvn checkstyle:check  # Запускаем Checkstyle для проверки кода
+  - mvn jacoco:report  # Генерируем отчет по покрытию тестов
+
+# Настройка кэширования для ускорения последующих сборок
+cache:
+  directories:
+    - $HOME/.m2
+
+# Настройка уведомлений, можно указать, чтобы уведомления приходили на email
+notifications:
+  email:
+    recipients:
+      - finalprojectlinkedin@gmail.com
+    on_success: change
+    on_failure: always
+
+    after_success:
+      # Отправляем отчет о покрытии в Coveralls
+      - mvn coveralls:report

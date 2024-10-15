@@ -1,4 +1,4 @@
-package com.finalProject.linkedin.dto.user.userRes;
+package com.finalProject.linkedin.dto.responce.user;
 
 import lombok.Data;
 

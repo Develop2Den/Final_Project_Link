@@ -1,7 +1,7 @@
 package com.finalProject.linkedin.config.security;
 
 import com.finalProject.linkedin.entity.User;
-import com.finalProject.linkedin.service.userService.UserService;
+import com.finalProject.linkedin.service.serviceImpl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
@@ -46,7 +46,9 @@ public class SecurityConfig {
                                 "/oauth2/**",
                                 "api/password-forgot",
                                 "api/password-reset",
-                                "/swagger-ui/**")
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html")
                         .permitAll()
                         .requestMatchers("/api/user/**").authenticated()
                         .anyRequest().authenticated()
@@ -95,16 +97,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(UserService userService) {
+    public UserDetailsService userDetailsService(UserServiceImpl userServiceImpl) {
         return email -> {
 
-            Boolean isVerified = userService.isUserVerified(email);
+            Boolean isVerified = userServiceImpl.isUserVerified(email);
             if (isVerified == null || !isVerified) {
                 log.warn("Юзер не подтвержден: {}", email);
                 throw new BadCredentialsException("Почта не подтверждена!.");
             }
 
-            User user = userService.findUserByEmail(email)
+            User user = userServiceImpl.findUserByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
 

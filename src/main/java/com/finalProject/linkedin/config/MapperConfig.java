@@ -1,6 +1,6 @@
 package com.finalProject.linkedin.config;
 
-import com.finalProject.linkedin.dto.user.userRes.UserRes;
+import com.finalProject.linkedin.dto.responce.user.UserRes;
 import com.finalProject.linkedin.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -15,7 +15,7 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 @Configuration
 @EnableJpaAuditing
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
-public class JpaConfig {
+public class MapperConfig {
 
     @Bean
     public ObjectMapper objectMapper() {

@@ -2,10 +2,10 @@ package com.finalProject.linkedin.controllers;
 
 
 import com.finalProject.linkedin.controller.UserController;
-import com.finalProject.linkedin.dto.user.userReq.UserReq;
-import com.finalProject.linkedin.dto.user.userRes.UserRes;
-import com.finalProject.linkedin.service.userService.UserFacade;
+import com.finalProject.linkedin.dto.request.user.UserReq;
+import com.finalProject.linkedin.dto.responce.user.UserRes;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.finalProject.linkedin.service.serviceImpl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -30,7 +30,7 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private UserFacade userFacade;
+    private UserServiceImpl userService;
 
     @BeforeEach
     void setUp() {
@@ -44,10 +44,10 @@ public class UserControllerTest {
         userRequest.setEmail("john.doe@example.com");
 
         UserRes userResponse = new UserRes();
-        userResponse.setId(1);
+        userResponse.setId(1L);
         userResponse.setEmail("john.doe@example.com");
 
-        when(userFacade.createUser(any())).thenReturn(userResponse);
+        when(userService.createUser(any())).thenReturn(userResponse);
 
         mockMvc.perform(post("/api/user")
                         .with(csrf())
@@ -62,10 +62,10 @@ public class UserControllerTest {
     @WithMockUser
     void testGetCustomer() throws Exception {
         UserRes userResponse = new UserRes();
-        userResponse.setId(1);
+        userResponse.setId(1L);
         userResponse.setEmail("john.doe@example.com");
 
-        when(userFacade.getUser(anyInt())).thenReturn(userResponse);
+        when(userService.getUser(anyLong())).thenReturn(userResponse);
 
         mockMvc.perform(get("/api/customers/1").with(csrf()))
                 .andExpect(status().isOk())

@@ -31,4 +31,9 @@ public class ProfileSpecification {
         return (Root<Profile> root, CriteriaQuery<?> query, CriteriaBuilder builder) ->
                 builder.isNull(root.get("deletedAt"));
     }
+
+//    public static Specification<User> hasEmail(String email) {
+//        return (Root<User> root, CriteriaQuery<?> query, CriteriaBuilder builder) ->
+//                email == null ? null : builder.like(root.get("email"), "%" + email + "%");
+//    }
 }

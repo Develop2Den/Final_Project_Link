@@ -1,17 +1,18 @@
-package com.finalProject.linkedin.service.authService;
+package com.finalProject.linkedin.service.serviceImpl;
 
+import com.finalProject.linkedin.service.serviceIR.AuthEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthEmailService {
+public class AuthEmailServiceImpl implements AuthEmailService {
 
     private final JavaMailSender mailSender;
 
     @Autowired
-    public AuthEmailService(JavaMailSender mailSender) {
+    public AuthEmailServiceImpl(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 

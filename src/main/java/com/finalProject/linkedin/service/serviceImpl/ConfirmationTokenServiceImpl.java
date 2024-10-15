@@ -1,7 +1,8 @@
-package com.finalProject.linkedin.service.tokenService;
+package com.finalProject.linkedin.service.serviceImpl;
 
 import com.finalProject.linkedin.entity.ConfirmationToken;
 import com.finalProject.linkedin.entity.User;
+import com.finalProject.linkedin.service.serviceIR.ConfirmationTokenService;
 import com.finalProject.linkedin.utils.enums.TokenType;
 import com.finalProject.linkedin.repository.ConfirmationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +12,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class ConfirmationTokenService {
+public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
 
     @Autowired
     private ConfirmationTokenRepository confirmationTokenRepository;
 
-    public ConfirmationTokenService(ConfirmationTokenRepository confirmationTokenRepository) {
+    public ConfirmationTokenServiceImpl(ConfirmationTokenRepository confirmationTokenRepository) {
         this.confirmationTokenRepository = confirmationTokenRepository;
     }
 

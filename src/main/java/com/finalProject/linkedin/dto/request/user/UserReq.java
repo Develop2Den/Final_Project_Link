@@ -1,4 +1,4 @@
-package com.finalProject.linkedin.dto.user.userReq;
+package com.finalProject.linkedin.dto.request.user;
 
 
 import com.finalProject.linkedin.utils.password.PasswordValidator;
@@ -12,12 +12,11 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserReq {
 
-    @Email(regexp = "^[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z]{2,}$", message = "Email should be valid")
-    @NotNull(message = "Email cannot be null")
+    @Email(message = "Email should be valid")
     private String email;
 
     @Valid
     private PasswordValidator password;
 
-    private boolean isVerified;
+    private Boolean isVerified;
 }

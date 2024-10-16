@@ -1,6 +1,6 @@
 package com.finalProject.linkedin.controller;
 
-import com.finalProject.linkedin.dto.request.user.UserReq;
+import com.finalProject.linkedin.dto.request.user.CreateUserReq;
 import com.finalProject.linkedin.entity.ConfirmationToken;
 import com.finalProject.linkedin.entity.User;
 import com.finalProject.linkedin.utils.enums.TokenType;
@@ -36,18 +36,18 @@ public class AuthController {
 
 
     @PostMapping("/auth")
-    public ResponseEntity<String> register(@RequestBody @Valid UserReq userRequest) {
-        if (userServiceImpl.findUserByEmail(userRequest.getEmail()).isPresent()) {
+    public ResponseEntity<String> register(@RequestBody @Valid CreateUserReq createUserRequest) {
+        if (userServiceImpl.findUserByEmail(createUserRequest.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User exists");
         }
-        log.info("Реєстрація користувача з паролем: {}", userRequest.getPassword().getPassword());
+        log.info("Реєстрація користувача з паролем: {}", createUserRequest.getPassword().getPassword());
 
         User newUser = new User(
-                userRequest.getEmail(),
-                passwordEncoder.encode(userRequest.getPassword().getPassword())
+                createUserRequest.getEmail(),
+                passwordEncoder.encode(createUserRequest.getPassword().getPassword())
         );
         userServiceImpl.save(newUser);
-        log.info("Успішно зареєстровано з електронною адресою: {}", userRequest.getEmail());
+        log.info("Успішно зареєстровано з електронною адресою: {}", createUserRequest.getEmail());
 
         String token = confirmationTokenServiceImpl.createToken(newUser);
         String confirmationLink = "http://localhost:9000/api/confirm?token=" + token;

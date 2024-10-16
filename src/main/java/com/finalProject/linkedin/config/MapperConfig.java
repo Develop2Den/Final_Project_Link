@@ -1,6 +1,6 @@
 package com.finalProject.linkedin.config;
 
-import com.finalProject.linkedin.dto.responce.user.UserRes;
+import com.finalProject.linkedin.dto.responce.user.CreateUserRes;
 import com.finalProject.linkedin.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -26,7 +26,7 @@ public class MapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
 
-        modelMapper.addMappings(new PropertyMap<User, UserRes>() {
+        modelMapper.addMappings(new PropertyMap<User, CreateUserRes>() {
             @Override
             protected void configure() {
                 map().setId(source.getUserId());

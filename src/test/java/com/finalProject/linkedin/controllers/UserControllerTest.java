@@ -2,8 +2,8 @@ package com.finalProject.linkedin.controllers;
 
 
 import com.finalProject.linkedin.controller.UserController;
-import com.finalProject.linkedin.dto.request.user.UserReq;
-import com.finalProject.linkedin.dto.responce.user.UserRes;
+import com.finalProject.linkedin.dto.request.user.CreateUserReq;
+import com.finalProject.linkedin.dto.responce.user.CreateUserRes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finalProject.linkedin.service.serviceImpl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,19 +40,19 @@ public class UserControllerTest {
     @Test
     @WithMockUser
     void testCreateUser() throws Exception {
-        UserReq userRequest = new UserReq();
-        userRequest.setEmail("john.doe@example.com");
+        CreateUserReq createUserRequest = new CreateUserReq();
+        createUserRequest.setEmail("john.doe@example.com");
 
-        UserRes userResponse = new UserRes();
-        userResponse.setId(1L);
-        userResponse.setEmail("john.doe@example.com");
+        CreateUserRes createUserResponse = new CreateUserRes();
+        createUserResponse.setId(1L);
+        createUserResponse.setEmail("john.doe@example.com");
 
-        when(userService.createUser(any())).thenReturn(userResponse);
+        when(userService.createUser(any())).thenReturn(createUserResponse);
 
         mockMvc.perform(post("/api/user")
                         .with(csrf())
                         .contentType("application/json")
-                        .content(new ObjectMapper().writeValueAsString(userRequest)))
+                        .content(new ObjectMapper().writeValueAsString(createUserRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.email").value("john.doe@example.com"));
@@ -61,11 +61,11 @@ public class UserControllerTest {
     @Test
     @WithMockUser
     void testGetCustomer() throws Exception {
-        UserRes userResponse = new UserRes();
-        userResponse.setId(1L);
-        userResponse.setEmail("john.doe@example.com");
+        CreateUserRes createUserResponse = new CreateUserRes();
+        createUserResponse.setId(1L);
+        createUserResponse.setEmail("john.doe@example.com");
 
-        when(userService.getUser(anyLong())).thenReturn(userResponse);
+        when(userService.getUser(anyLong())).thenReturn(createUserResponse);
 
         mockMvc.perform(get("/api/customers/1").with(csrf()))
                 .andExpect(status().isOk())

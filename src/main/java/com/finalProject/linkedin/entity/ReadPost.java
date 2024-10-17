@@ -21,13 +21,13 @@ public class ReadPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "read_post_id")
-    private Integer readPostId;
+    private Long readPostId;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     @Column(name = "post_id")
-    private Integer postId;
+    private Long postId;
 
     private LocalDateTime readAt;
 

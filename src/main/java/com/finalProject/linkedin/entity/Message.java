@@ -23,16 +23,16 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_id")
-    private Integer messageId;
+    private Long messageId;
 
     @Column(name = "chat_id")
-    private Integer chatId;
+    private Long chatId;
 
     @Column(name = "sender_id")
-    private Integer senderId;
+    private Long senderId;
 
     @Column(name = "recipient_id")
-    private Integer recipientId;
+    private Long recipientId;
 
     private String content;
     @CreationTimestamp

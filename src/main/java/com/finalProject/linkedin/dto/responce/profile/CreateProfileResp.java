@@ -1,4 +1,4 @@
-package com.finalProject.linkedin.dto.request;
+package com.finalProject.linkedin.dto.responce.profile;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
  *
  * @author Alexander Isai on 10.10.2024.
  */
-public record CreateProfileReq (
+public record CreateProfileResp(
+        @NotNull(message = "Should be not empty")
+        Long profileId,
         @NotNull(message = "Should be not empty")
         Long userId,
         String name,
@@ -18,6 +20,7 @@ public record CreateProfileReq (
         String status,
         String headerPhotoUrl,
         String position,
-        String address
+        String address,
+        LocalDateTime createAt
 ){
 }

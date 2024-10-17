@@ -22,13 +22,13 @@ public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "subscription_id")
-    private Integer subscriptionId;
+    private Long subscriptionId;
 
     @Column(name = "follower_id")
-    private Integer followerId;
+    private Long followerId;
 
     @Column(name = "following_id")
-    private Integer followingId;
+    private Long followingId;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

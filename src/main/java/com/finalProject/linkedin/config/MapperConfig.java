@@ -1,6 +1,7 @@
 package com.finalProject.linkedin.config;
 
 import com.finalProject.linkedin.dto.responce.user.CreateUserRes;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.finalProject.linkedin.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -19,7 +20,11 @@ public class MapperConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        return mapper;
     }
 
     @Bean

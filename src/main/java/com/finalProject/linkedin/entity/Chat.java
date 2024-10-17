@@ -23,13 +23,13 @@ public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_id")
-    private Integer chatId;
+    private Long chatId;
 
     @Column(name = "sender_id")
-    private Integer senderId;
+    private Long senderId;
 
     @Column(name = "recipient_id")
-    private Integer recipientId;
+    private Long recipientId;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

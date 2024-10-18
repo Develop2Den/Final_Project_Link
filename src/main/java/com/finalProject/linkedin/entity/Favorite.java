@@ -1,5 +1,6 @@
 package com.finalProject.linkedin.entity;
 
+import com.finalProject.linkedin.utils.enums.TargetType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,22 +21,23 @@ import java.time.LocalDateTime;
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "favorite_id")
+    @Column(name = "favorite_id", nullable = false)
     private Long favoriteId;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "target_id")
+    @Column(name = "target_id", nullable = false)
     private Long targetId;
 
-    @Column(name = "target_type")
-    private String targetType;
+    @Column(name = "target_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TargetType targetType;
 
     @Column(name = "is_positive")
     private Boolean isPositive;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

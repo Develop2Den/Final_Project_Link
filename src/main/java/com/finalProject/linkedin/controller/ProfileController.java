@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,4 +37,38 @@ public class ProfileController {
     public ResponseEntity<CreateProfileResp> create(@RequestBody @Valid CreateProfileReq createProfileReq) {
         return ResponseEntity.status(HttpStatus.CREATED).body(profileService.createProfile(createProfileReq));
     }
+
+    @GetMapping("/{profileId}")
+    @Operation(summary = "Get profile by ID", description = "Get profile by its ID")
+    @ApiResponse(responseCode = "200")
+    public ResponseEntity<CreateProfileResp> getProfileById(@PathVariable Long profileId) {
+        return ResponseEntity.ok(profileService.getProfileById(profileId));
+    }
+
+    @GetMapping
+    @Operation(summary = "Get paginated profiles", description = "Get list of profiles with pagination")
+    @ApiResponse(responseCode = "200")
+    public ResponseEntity<Page<CreateProfileResp>> getAllProfiles(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(profileService.getAllProfiles(page, size));
+    }
+
+    @PutMapping("/{profileId}")
+    @Operation(summary = "Update profile", description = "Update profile by its ID")
+    @ApiResponse(responseCode = "200")
+    public ResponseEntity<CreateProfileResp> updateProfile(
+            @PathVariable Long profileId,
+            @RequestBody @Valid CreateProfileReq createProfileReq) {
+        return ResponseEntity.ok(profileService.updateProfile(profileId, createProfileReq));
+    }
+
+    @DeleteMapping("/{profileId}")
+    @Operation(summary = "Mark profile as deleted", description = "Mark profile as logically deleted by setting 'deletedAt'")
+    @ApiResponse(responseCode = "204")
+    public ResponseEntity<Void> markProfileAsDeleted(@PathVariable Long profileId) {
+        profileService.deleteProfile(profileId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

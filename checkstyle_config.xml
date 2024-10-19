@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <property name="charset" value="UTF-8" />
+    <property name="severity" value="warning" />
+    <property name="fileExtensions" value="java, properties, xml" />
+
+    <!-- Проверка на использование табуляции вместо пробелов -->
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true" />
+    </module>
+
+    <!-- Ограничение длины строк в коде -->
+    <module name="LineLength">
+        <property name="max" value="150" /> <!-- Увеличено до 150 символов -->
+        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://" />
+    </module>
+
+    <!-- Проверки, которые должны быть внутри TreeWalker -->
+    <module name="TreeWalker">
+        <!-- Проверка на наличие комментариев перед методами -->
+        <module name="JavadocMethod">
+            <property name="allowMissingParamTags" value="true" />
+            <property name="allowMissingReturnTag" value="true" />
+            <property name="allowedAnnotations" value="javax.annotation.Nullable,javax.annotation.Nonnull" />
+        </module>
+
+        <!-- Проверка на то, что имя внешнего типа совпадает с именем файла -->
+        <module name="OuterTypeFilename" />
+
+        <!-- Проверка аббревиатур в именах классов и методов -->
+        <module name="AbbreviationAsWordInName">
+            <property name="ignoreFinal" value="false" />
+            <property name="allowedAbbreviationLength" value="10" /> <!-- Изменено с 1 на 3 -->
+        </module>
+
+        <!-- Пустые строки между блоками кода -->
+        <module name="EmptyLineSeparator">
+            <property name="allowNoEmptyLineBetweenFields" value="true" />
+            <property name="allowMultipleEmptyLines" value="true" /> <!-- Разрешение нескольких пустых строк -->
+        </module>
+
+        <!-- Проверка на правильные отступы -->
+        <module name="Indentation">
+            <property name="basicOffset" value="4" />
+            <property name="braceAdjustment" value="0" />
+            <property name="caseIndent" value="2" />
+            <property name="throwsIndent" value="4" /> <!-- Исправлено с 2 на 4 -->
+            <property name="lineWrappingIndentation" value="4" /> <!-- Исправлено с 2 на 4 -->
+        </module>
+
+        <!-- Проверка имени пакета -->
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z][a-zA-Z0-9]*)*$" />
+            <message key="name.invalidPattern" value="Package name ''{0}'' must match pattern ''{1}''." />
+        </module>
+
+        <!-- Проверка на пробелы вокруг операторов и элементов кода -->
+        <module name="WhitespaceAround">
+            <property name="allowEmptyConstructors" value="true" />
+            <property name="allowEmptyMethods" value="true" />
+            <property name="allowEmptyTypes" value="true" />
+            <property name="allowEmptyLoops" value="true" />
+        </module>
+
+        <!-- Проверка на пустые блоки кода -->
+        <module name="EmptyBlock">
+            <property name="option" value="TEXT" />
+        </module>
+
+        <!-- Проверка стиля именования классов и интерфейсов -->
+        <module name="TypeName">
+            <property name="format" value="^[A-Z][a-zA-Z0-9]*$" />
+        </module>
+
+        <!-- Проверка стиля именования переменных -->
+        <module name="LocalVariableName">
+            <property name="format" value="^[a-zA-Z][a-zA-Z0-9]*$" />
+        </module>
+
+        <!-- Проверка стиля именования методов -->
+        <module name="MethodName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$" />
+        </module>
+
+        <!-- Проверка на использование 'this' -->
+        <module name="RequireThis" />
+
+        <!-- Проверка на лишние импорты -->
+        <module name="UnusedImports" />
+    </module>
+</module>
+
+
+

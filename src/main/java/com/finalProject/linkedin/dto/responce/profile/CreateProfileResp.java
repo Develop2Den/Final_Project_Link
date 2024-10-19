@@ -22,5 +22,5 @@ public record CreateProfileResp(
         String position,
         String address,
         LocalDateTime createAt
-) {
+){
 }

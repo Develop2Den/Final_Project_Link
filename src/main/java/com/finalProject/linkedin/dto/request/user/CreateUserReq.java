@@ -17,5 +17,5 @@ public class CreateUserReq {
     @Valid
     private PasswordValidator password;
 
-    private Boolean isVerified;
+//    private Boolean isVerified;
 }

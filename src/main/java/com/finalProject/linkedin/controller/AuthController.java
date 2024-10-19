@@ -24,7 +24,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/")
 public class AuthController {
 
     private final AuthEmailServiceImpl authEmailServiceImpl;
@@ -50,7 +50,7 @@ public class AuthController {
         log.info("Успішно зареєстровано з електронною адресою: {}", createUserRequest.getEmail());
 
         String token = confirmationTokenServiceImpl.createToken(newUser);
-        String confirmationLink = "http://localhost:9000/api/confirm?token=" + token;
+        String confirmationLink = "http://localhost:9000/confirm?token=" + token;
         authEmailServiceImpl.sendConfirmationEmail(newUser.getEmail(), confirmationLink);
         return ResponseEntity.status(HttpStatus.CREATED).body("Користувач зареєстрований. Перевірте свою електронну пошту для підтвердження.");
     }

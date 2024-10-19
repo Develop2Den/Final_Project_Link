@@ -23,10 +23,10 @@ public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "profile_id")
-    private Integer profileId;
+    private Long profileId;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
     @Column(name = "name")
     private String name;
     @Column(name = "last_name")

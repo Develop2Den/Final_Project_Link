@@ -3,7 +3,7 @@ package com.finalProject.linkedin.dto.responce.user;
 import lombok.Data;
 
 @Data
-public class UserRes {
+public class CreateUserRes {
 
     private Long id;
     private String email;

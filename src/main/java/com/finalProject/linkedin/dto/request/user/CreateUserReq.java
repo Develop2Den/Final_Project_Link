@@ -5,12 +5,11 @@ import com.finalProject.linkedin.utils.password.PasswordValidator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserReq {
+public class CreateUserReq {
 
     @Email(message = "Email should be valid")
     private String email;
@@ -18,5 +17,5 @@ public class UserReq {
     @Valid
     private PasswordValidator password;
 
-    private Boolean isVerified;
+//    private Boolean isVerified;
 }

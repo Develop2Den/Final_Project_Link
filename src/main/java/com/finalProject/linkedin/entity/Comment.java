@@ -23,13 +23,13 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private Integer commentId;
+    private Long commentId;
 
     @Column(name = "post_id")
-    private Integer postId;
+    private Long postId;
 
     @Column(name = "author_id")
-    private Integer authorId;
+    private Long authorId;
 
     private String content;
     @CreationTimestamp

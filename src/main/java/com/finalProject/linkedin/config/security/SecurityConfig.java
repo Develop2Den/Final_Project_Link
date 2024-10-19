@@ -39,33 +39,33 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                "/api/login",
-                                "/api/auth",
+                                "/login",
+                                "/auth",
                                 "/",
-                                "/api/confirm",
+                                "/confirm",
                                 "/oauth2/**",
-                                "api/password-forgot",
-                                "api/password-reset",
+                                "/password-forgot",
+                                "/password-reset",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html")
                         .permitAll()
-                        .requestMatchers("/api/user/**").authenticated()
+                        .requestMatchers("/user/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/api/login")
+                        .loginPage("/login")
                         .defaultSuccessUrl("http://localhost:3000/customer", true)
                         .permitAll()
                 )
                 .formLogin(form -> form
-                        .loginPage("/api/login")
-                        .defaultSuccessUrl("/api/user", true)
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/user", true)
                         .successHandler((req, res, auth) -> {
                             if (auth != null) {
-                                res.sendRedirect("/api/user");
+                                res.sendRedirect("/user");
                             } else {
-                                res.sendRedirect("/api/login");
+                                res.sendRedirect("/login");
                             }
                         })
                         .failureHandler((request, response, exception) -> {
@@ -80,7 +80,7 @@ public class SecurityConfig {
                         .tokenValiditySeconds(7 * 24 * 60 * 60) // одна неделя
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/api/logout")
+                        .logoutUrl("/logout")
                         .logoutSuccessHandler(customLogoutSuccessHandler())
                         .deleteCookies("JSESSIONID")
                         .invalidateHttpSession(true)

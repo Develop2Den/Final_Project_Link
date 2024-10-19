@@ -25,7 +25,7 @@ public class Notification {
     private Long notificationId;
 
     @Column(name = "recipient_id")
-    private Integer recipientId;
+    private Long recipientId;
     @Column(name = "message")
     private String message;
     @Column(name = "type")

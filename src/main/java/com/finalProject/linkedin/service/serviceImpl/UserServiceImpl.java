@@ -1,7 +1,7 @@
 package com.finalProject.linkedin.service.serviceImpl;
 
-import com.finalProject.linkedin.dto.request.user.UserReq;
-import com.finalProject.linkedin.dto.responce.user.UserRes;
+import com.finalProject.linkedin.dto.request.user.CreateUserReq;
+import com.finalProject.linkedin.dto.responce.user.CreateUserRes;
 import com.finalProject.linkedin.entity.User;
 import com.finalProject.linkedin.repository.UserRepository;
 import com.finalProject.linkedin.service.serviceIR.UserService;
@@ -33,18 +33,18 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public UserRes createUser(UserReq userReq) {
+    public CreateUserRes createUser(CreateUserReq createUserReq) {
 
-        User user = modelMapper.map(userReq, User.class);
+        User user = modelMapper.map(createUserReq, User.class);
 
-        if (userReq.getPassword() != null) {
-            String plainPassword = userReq.getPassword().getPassword();
+        if (createUserReq.getPassword() != null) {
+            String plainPassword = createUserReq.getPassword().getPassword();
             user.setPassword(passwordEncoder.encode(plainPassword));
             user.setIsVerified(true);
         }
 
         User savedUser = save(user);
-        return modelMapper.map(savedUser, UserRes.class);
+        return modelMapper.map(savedUser, CreateUserRes.class);
     }
 
     public Optional<User> findUserByEmail(String email) {
@@ -59,14 +59,14 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    public UserRes updateUser(Long id, UserReq userReq) {
-        User user = modelMapper.map(userReq, User.class);
+    public CreateUserRes updateUser(Long id, CreateUserReq createUserReq) {
+        User user = modelMapper.map(createUserReq, User.class);
         user.setUserId(id);
         User updatedUser = updateUser(id, new User(
                 user.getEmail(),
                 passwordEncoder.encode(user.getPassword())
         ));
-        return updatedUser != null ? modelMapper.map(updatedUser, UserRes.class) : null;
+        return updatedUser != null ? modelMapper.map(updatedUser, CreateUserRes.class) : null;
     }
 
     public boolean deleteById(Long id) {
@@ -81,11 +81,11 @@ public class UserServiceImpl implements UserService {
         return deleteById(id);
     }
 
-    public UserRes getCurrentUser(String email) {
+    public CreateUserRes getCurrentUser(String email) {
         Optional<User> optionalUser = findUserByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            return modelMapper.map(user, UserRes.class);
+            return modelMapper.map(user, CreateUserRes.class);
         } else {
             throw new UsernameNotFoundException("Customer not found with email: " + email);
         }
@@ -95,9 +95,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public UserRes getUser(Long id) {
+    public CreateUserRes getUser(Long id) {
         User user = getOne(id);
-        return user != null ? modelMapper.map(user, UserRes.class) : null;
+        return user != null ? modelMapper.map(user, CreateUserRes.class) : null;
     }
 
     public Page<User> findAll(Pageable pageable) {

@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:src/main/java/com/finalProject/linkedin/dto/responce/profile/PostResp/CreateProfileResp.java
-package com.Final_Project.Linkedin.dto.responce.PostResp;
-========
 package com.finalProject.linkedin.dto.responce.profile;
->>>>>>>> master:src/main/java/com/finalProject/linkedin/dto/responce/profile/CreateProfileResp.java
 
 import jakarta.validation.constraints.NotNull;
 
@@ -26,5 +22,5 @@ public record CreateProfileResp(
         String position,
         String address,
         LocalDateTime createAt
-){
+) {
 }

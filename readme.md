@@ -45,6 +45,13 @@ exit
 id=143568406207-ghs0s1apg6pn92a71qu72vgqgcojla5p.apps.googleusercontent.com
 secret=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
 ```
+### Данные для входа в удаленную базу данных:
+```
+ url=jdbc:postgresql://ep-wandering-wind-a5r8acut.us-east-2.aws.neon.tech/LinkedinDB?sslmode=require;
+ username=LinkedinDB_owner;
+ password=cg9vWeo3yrVF;
+
+```
 
 
 

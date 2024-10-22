@@ -16,4 +16,8 @@ public class UtilsFunc {
         String email = authentication.getName();
         return userService.getCurrentUser(email);
     }
+
+//    public static String getUrl() {
+//        return ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+//    }
 }

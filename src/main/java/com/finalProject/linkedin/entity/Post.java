@@ -25,9 +25,10 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long postId;
-
     @Column(name = "author_id")
     private Long authorId;
+    @Column(name = "title")
+    private String title;
     @Column(name = "content")
     private String content;
     @CreationTimestamp

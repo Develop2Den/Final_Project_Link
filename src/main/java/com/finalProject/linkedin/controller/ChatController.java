@@ -22,7 +22,7 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping("/list")
-    public List<ChatResp> getAllCustomers(
+    public List<ChatResp> getAllChats(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {

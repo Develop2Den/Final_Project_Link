@@ -11,6 +11,7 @@ import com.finalProject.linkedin.repository.UserRepository;
 import com.finalProject.linkedin.service.serviceIR.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
+
     private final MessageMapper messageMapper;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
@@ -32,6 +34,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public boolean deleteById(Long id) {
+
         Message message = messageRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Message not found with id " + id));
         message.setDeletedAt(LocalDateTime.now());
@@ -51,6 +54,7 @@ public class MessageServiceImpl implements MessageService {
         return null;
     }
 
+
     @Override
     public List<MessageResp> getChatMessages(Long id1, Long id2, Pageable pageable) {
         if (userRepository.findById(id1).isEmpty())
@@ -68,6 +72,5 @@ public class MessageServiceImpl implements MessageService {
                 .map(message -> messageMapper.toMessageWithUserResp(message, id))
                 .toList();
     }
-
 
 }

@@ -1,5 +1,4 @@
 package com.finalProject.linkedin.service.serviceIR;
-
 import com.finalProject.linkedin.dto.request.message.MessageReq;
 import com.finalProject.linkedin.dto.responce.message.GetMessageWithProfileResp;
 import com.finalProject.linkedin.dto.responce.message.MessageResp;
@@ -12,6 +11,7 @@ public interface MessageService {
 
     boolean deleteById(Long id);
 
+
     List<MessageResp> findAll(Pageable pageable);
 
     MessageResp update(Long id, MessageReq MessageReq);
@@ -19,6 +19,5 @@ public interface MessageService {
     List<MessageResp> getChatMessages(Long id1, Long id2, Pageable pageable);
 
     List<GetMessageWithProfileResp> findLatestMessagesForUser(Long id1, Pageable pageable);
-
 
 }

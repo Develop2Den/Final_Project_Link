@@ -1,8 +1,8 @@
 package com.finalProject.linkedin.service.serviceIR;
 
 import com.finalProject.linkedin.dto.request.message.MessageReq;
+import com.finalProject.linkedin.dto.responce.message.GetMessageWithProfileResp;
 import com.finalProject.linkedin.dto.responce.message.MessageResp;
-import com.finalProject.linkedin.entity.Message;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -12,9 +12,13 @@ public interface MessageService {
 
     boolean deleteById(Long id);
 
-    Message getOne(Long id);
-
     List<MessageResp> findAll(Pageable pageable);
 
     MessageResp update(Long id, MessageReq MessageReq);
+
+    List<MessageResp> getChatMessages(Long id1, Long id2, Pageable pageable);
+
+    List<GetMessageWithProfileResp> findLatestMessagesForUser(Long id1, Pageable pageable);
+
+
 }

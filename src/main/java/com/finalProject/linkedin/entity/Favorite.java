@@ -48,4 +48,6 @@ public class Favorite {
     @JsonIgnore
     private User user;
 
+    public Favorite(long l, long l1, long l2, TargetType targetType, boolean b) {
+    }
 }

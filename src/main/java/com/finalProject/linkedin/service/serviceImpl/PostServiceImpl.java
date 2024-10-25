@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,15 +25,18 @@ public class PostServiceImpl implements PostService {
 
     public CreatePostResponse creatPost(CreatePostReq createPostReq) {
         Post post = postMapper.toPost(createPostReq);
-
+        System.out.println(post);
         post = postRepository.save(post);
-
-        return postMapper.toCreatePostResp(post);
+        System.out.println("Пост после репо" + post);
+        CreatePostResponse createPostResponse = postMapper.toCreatePostResp(post) ;
+        System.out.println("В пост ответ  " + createPostResponse);
+        return createPostResponse;
     }
 
     public CreatePostResponse getPostById(Long postId) {
         Post post = postRepository.findByPostId(postId)
-                .orElseThrow(() -> new NotFoundException("Profile not found with id " + postId));
+                .filter(x -> x.getDeletedAt() == null)
+                .orElseThrow(() -> new NotFoundException("Post not found with id " + postId));
 
         return postMapper.toCreatePostResp(post);
     }
@@ -43,10 +47,20 @@ public class PostServiceImpl implements PostService {
         return profilePage.map(postMapper::toCreatePostResp);
     }
 
-    public Page<CreatePostResponse> getAllPostsForUser(Long useId ,int page, int size) {
+    public Page<CreatePostResponse> getAllPostsForUser(Long userId ,int page, int size) {
+        System.out.println("I was here 1 ");
         Pageable pageable = PageRequest.of(page, size);
-        Page<Post> profilePage = postRepository.findByAuthorId(useId , pageable);
-        return profilePage.map(postMapper::toCreatePostResp);
+        boolean checkedID = postRepository.existsByAuthorId(userId);
+        System.out.println(checkedID);
+        System.out.println("I was here 2 ");
+        if (checkedID) {
+            Page<Post> profilePage = postRepository.findByAuthorIdAndDeletedAtIsNull(userId, pageable);
+            return profilePage.map(postMapper::toCreatePostResp);
+        }
+        else {
+            System.out.println("I was here 3 ");
+            throw new NotFoundException("Profile not found with id " + userId);
+        }
     }
 
     public void deletePost(Long postId) {

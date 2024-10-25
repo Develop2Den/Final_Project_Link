@@ -1,17 +1,15 @@
 package com.finalProject.linkedin.mapper;
 
 import com.finalProject.linkedin.dto.request.post.CreatePostReq;
-
-import com.finalProject.linkedin.dto.responce.post.CreatePostResponse;
+import com.finalProject.linkedin.dto.request.subscription.CreateSubscriptionReq;
 import com.finalProject.linkedin.entity.Post;
+import com.finalProject.linkedin.entity.Subscription;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface PostMapper {
+public interface SubscriptionsMapper {
 
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
-    Post toPost (CreatePostReq createPostReq);
-
-    CreatePostResponse toCreatePostResp (Post post);
+    Subscription toSubscription (CreateSubscriptionReq createSubscriptionReq);
 }

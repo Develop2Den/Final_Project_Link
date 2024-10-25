@@ -25,11 +25,8 @@ public class PostServiceImpl implements PostService {
 
     public CreatePostResponse creatPost(CreatePostReq createPostReq) {
         Post post = postMapper.toPost(createPostReq);
-        System.out.println(post);
         post = postRepository.save(post);
-        System.out.println("Пост после репо" + post);
         CreatePostResponse createPostResponse = postMapper.toCreatePostResp(post) ;
-        System.out.println("В пост ответ  " + createPostResponse);
         return createPostResponse;
     }
 
@@ -41,24 +38,15 @@ public class PostServiceImpl implements PostService {
         return postMapper.toCreatePostResp(post);
     }
 
-    public Page<CreatePostResponse> getAllPosts(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Post> profilePage = postRepository.findAll(pageable);
-        return profilePage.map(postMapper::toCreatePostResp);
-    }
-
     public Page<CreatePostResponse> getAllPostsForUser(Long userId ,int page, int size) {
-        System.out.println("I was here 1 ");
         Pageable pageable = PageRequest.of(page, size);
         boolean checkedID = postRepository.existsByAuthorId(userId);
         System.out.println(checkedID);
-        System.out.println("I was here 2 ");
         if (checkedID) {
             Page<Post> profilePage = postRepository.findByAuthorIdAndDeletedAtIsNull(userId, pageable);
             return profilePage.map(postMapper::toCreatePostResp);
         }
         else {
-            System.out.println("I was here 3 ");
             throw new NotFoundException("Profile not found with id " + userId);
         }
     }

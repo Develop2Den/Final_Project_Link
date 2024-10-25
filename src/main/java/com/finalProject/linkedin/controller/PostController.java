@@ -54,14 +54,4 @@ public class PostController {
             @RequestParam(defaultValue = "10") int size){
         return ResponseEntity.ok(postServiceImp.getAllPostsForUser(userId,page,size));
     }
-
-//    @GetMapping // need to delete ? they need that ?
-//    @Operation(summary = "Get post from base", description = "Get posts with pagination from base")
-//    @ApiResponse(responseCode = "204")
-//    public ResponseEntity<Page<CreatePostResponse>> getAllPosts (
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size){
-//        return ResponseEntity.ok(postServiceImp.getAllPosts(page,size));
-//    }
-
 }

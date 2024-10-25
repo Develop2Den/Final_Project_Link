@@ -39,9 +39,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             Subscription foundSubscription = existingSubscription.get();
             foundSubscription.setDeletedAt(null);
             subscriptionRepository.save(foundSubscription);
-            System.out.println("I was in if");
         } else {
-            System.out.println("I was in else");
             subscriptionRepository.save(subscription);
         }
     }

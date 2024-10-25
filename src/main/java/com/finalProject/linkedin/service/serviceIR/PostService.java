@@ -10,13 +10,9 @@ public interface PostService {
 
     CreatePostResponse getPostById(Long postId);
 
-    Page<CreatePostResponse> getAllPosts(int page, int size);
-
     void deletePost(Long postId);
 
     Page<CreatePostResponse> getAllPostsForUser(Long useId ,int page, int size);
-
-
 
     //Page<CreatePostResponse> getPostsForRecommends(Long User_id);
 }

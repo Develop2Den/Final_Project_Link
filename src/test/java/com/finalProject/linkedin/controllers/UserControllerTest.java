@@ -49,7 +49,7 @@ public class UserControllerTest {
 
         when(userService.createUser(any())).thenReturn(createUserResponse);
 
-        mockMvc.perform(post("/api/user")
+        mockMvc.perform(post("/user")
                         .with(csrf())
                         .contentType("application/json")
                         .content(new ObjectMapper().writeValueAsString(createUserRequest)))
@@ -64,12 +64,14 @@ public class UserControllerTest {
         CreateUserRes createUserResponse = new CreateUserRes();
         createUserResponse.setId(1L);
         createUserResponse.setEmail("john.doe@example.com");
+        createUserResponse.setIsVerified(true);
 
         when(userService.getUser(anyLong())).thenReturn(createUserResponse);
 
-        mockMvc.perform(get("/api/customers/1").with(csrf()))
+        mockMvc.perform(get("/user/1").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
+                .andExpect(jsonPath("$.isVerified").value(true));
     }
 }

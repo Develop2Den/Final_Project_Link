@@ -1,10 +1,12 @@
 package com.finalProject.linkedin.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.finalProject.linkedin.utils.enums.TargetType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -38,10 +40,14 @@ public class Favorite {
     private Boolean isPositive;
 
     @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JsonIgnore
     private User user;
 
+    public Favorite(long l, long l1, long l2, TargetType targetType, boolean b) {
+    }
 }

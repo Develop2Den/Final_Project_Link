@@ -50,7 +50,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html")
                         .permitAll()
-                        .requestMatchers("/user/**").authenticated()
+                        .requestMatchers("/profiles/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -60,10 +60,10 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/user", true)
+                        .defaultSuccessUrl("/profiles", true)
                         .successHandler((req, res, auth) -> {
                             if (auth != null) {
-                                res.sendRedirect("/user");
+                                res.sendRedirect("/profiles");
                             } else {
                                 res.sendRedirect("/login");
                             }

@@ -1,5 +1,6 @@
 package com.finalProject.linkedin.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.finalProject.linkedin.dto.request.user.CreateUserReq;
 import com.finalProject.linkedin.dto.responce.user.CreateUserRes;
 import com.finalProject.linkedin.service.serviceImpl.UserServiceImpl;
@@ -42,6 +43,19 @@ public class UserController {
             return ResponseEntity.ok(createUserResponse);
         } else {
             log.warn("Current user not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CreateUserRes> getUser(@PathVariable long id) {
+        log.info("Retrieving User with ID {}", id);
+        CreateUserRes customerResponse = userService.getUser(id);
+        if (customerResponse != null) {
+            log.info("User retrieved: {}", customerResponse);
+            return ResponseEntity.ok(customerResponse);
+        } else {
+            log.warn("User with ID {} not found", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

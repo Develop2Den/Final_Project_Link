@@ -1,0 +1,54 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    - name: Install dependencies and run tests
+      run: mvn clean install
+
+    - name: Run JUnit and Mockito tests
+      run: mvn test
+      env:
+        CI: true
+
+    - name: Checkstyle Code Style Check
+      run: mvn checkstyle:check
+
+    - name: SonarQube Analysis
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: mvn sonar:sonar -Dsonar.projectKey=develop2den
+
+    - name: Upload coverage to Coveralls
+      uses: coverallsapp/github-action@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        COVERALLS-TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+        path-to-lcov: target/site/jacoco/jacoco.xml
+
+

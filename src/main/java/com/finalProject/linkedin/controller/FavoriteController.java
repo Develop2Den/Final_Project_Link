@@ -22,9 +22,11 @@ import java.util.List;
 @Validated
 public class FavoriteController {
 
-
-    @Autowired
     private FavoriteServiceImpl favoriteService;
+
+    public FavoriteController(FavoriteServiceImpl favoriteService) {
+        this.favoriteService = favoriteService;
+    }
 
     @PostMapping
     public ResponseEntity<CreateFavoriteRes> toggleFavorite(@RequestBody @Valid CreateFavoriteReq req) {

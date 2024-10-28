@@ -48,7 +48,7 @@ jobs:
       uses: coverallsapp/github-action@v2
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
+        COVERALLS-TOKEN: ${{ secrets.COVERALLS_TOKEN }}
         path-to-lcov: target/site/jacoco/jacoco.xml
 
 

@@ -44,8 +44,11 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: mvn sonar:sonar -Dsonar.projectKey=develop2den
 
-    - name: Coveralls Coverage
+    - name: Upload coverage to Coveralls
       uses: coverallsapp/github-action@v2
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+        coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
+        path-to-lcov: target/site/jacoco/jacoco.xml
+
 

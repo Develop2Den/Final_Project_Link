@@ -32,9 +32,6 @@ public class AuthController {
     private ConfirmationTokenServiceImpl confirmationTokenServiceImpl;
     private final PasswordEncoder passwordEncoder;
 
-
-
-
     @PostMapping("/auth")
     public ResponseEntity<String> register(@RequestBody @Valid CreateUserReq createUserRequest) {
         if (userServiceImpl.findUserByEmail(createUserRequest.getEmail()).isPresent()) {

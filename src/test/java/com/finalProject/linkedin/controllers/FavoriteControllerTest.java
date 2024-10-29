@@ -36,7 +36,7 @@ public class FavoriteControllerTest {
     }
 
     @Test
-    void toggleFavorite_ValidRequest_ReturnsFavoriteRes() {
+    void toggleFavoriteValidRequestReturnsFavoriteRes() {
         CreateFavoriteReq req = new CreateFavoriteReq(1L, 2L, TargetType.PROFILE_LIKE, true);
         CreateFavoriteRes res = new CreateFavoriteRes(req);
 
@@ -50,7 +50,7 @@ public class FavoriteControllerTest {
     }
 
     @Test
-    void removeFavorite_ValidRequest_ReturnsNoContent() {
+    void removeFavoriteValidRequestReturnsNoContent() {
         Long userId = 1L;
         Long targetId = 2L;
         TargetType targetType = TargetType.PROFILE_LIKE;
@@ -64,7 +64,7 @@ public class FavoriteControllerTest {
     }
 
     @Test
-    void getFavoritesByTarget_ValidRequest_ReturnsFavoritesList() {
+    void getFavoritesByTargetValidRequestReturnsFavoritesList() {
         Long targetId = 2L;
         TargetType targetType = TargetType.POST_LIKE;
         List<Favorite> favorites = List.of(new Favorite(1L, 1L, 2L, TargetType.POST_LIKE, true));
@@ -77,7 +77,5 @@ public class FavoriteControllerTest {
         assertEquals(favorites, response.getBody());
         verify(favoriteService).getFavoritesByTarget(targetId, targetType);
     }
-
-
 
 }

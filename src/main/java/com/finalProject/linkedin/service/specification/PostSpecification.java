@@ -1,7 +1,6 @@
 package com.finalProject.linkedin.service.specification;
 
 import com.finalProject.linkedin.entity.Post;
-import com.finalProject.linkedin.entity.User;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;

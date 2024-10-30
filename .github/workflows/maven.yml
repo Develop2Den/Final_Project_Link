@@ -51,11 +51,11 @@ jobs:
     - name: Generate JaCoCo coverage report
       run: mvn jacoco:report
 
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v2.3.4
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
-        path-to-lcov: target/site/jacoco/jacoco.xml
+    # - name: Coveralls GitHub Action
+    #   uses: coverallsapp/github-action@v2.3.4
+    #   with:
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
+    #     coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
+    #     path-to-lcov: target/site/jacoco/jacoco.xml
 
 

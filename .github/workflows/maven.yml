@@ -39,16 +39,23 @@ jobs:
     - name: Checkstyle Code Style Check
       run: mvn clean validate
 
-    - name: SonarQube Analysis
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: mvn sonar:sonar -Dsonar.projectKey=develop2den
+    # - name: SonarCloud Analysis
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #   run: |
+    #     mvn sonar:sonar \
+    #     -Dsonar.projectKey=develop2den \
+    #     -Dsonar.organization=Final_Project_Linkedin \
+    #     -Dsonar.host.url=https://sonarcloud.io
+     
+    - name: Generate JaCoCo coverage report
+      run: mvn jacoco:report
 
-    - name: Upload coverage to Coveralls
-      uses: coverallsapp/github-action@v2
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
-        path-to-lcov: target/site/jacoco/jacoco.xml
+    # - name: Coveralls GitHub Action
+    #   uses: coverallsapp/github-action@v2.3.4
+    #   with:
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
+    #     coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
+    #     path-to-lcov: target/site/jacoco/jacoco.xml
 
 

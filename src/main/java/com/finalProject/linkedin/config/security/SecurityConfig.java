@@ -62,7 +62,7 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/user", true)
+                        .defaultSuccessUrl("/profiles", true)
                         .successHandler((req, res, auth) -> {
                             if (auth != null) {
                                 res.sendRedirect("/profiles");

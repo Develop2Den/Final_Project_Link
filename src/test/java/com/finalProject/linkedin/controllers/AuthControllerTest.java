@@ -49,7 +49,7 @@ class AuthControllerTest {
 
     @Test
     void registerShouldReturnCreatedResponseWhenUserIsRegistered() {
-        // Arrange
+
         CreateUserReq createUserRequest = new CreateUserReq();
         createUserRequest.setEmail("test@example.com");
         createUserRequest.setPassword(PasswordValidator.create("Password123")); // замените на нужный конструктор
@@ -58,10 +58,8 @@ class AuthControllerTest {
         when(passwordEncoder.encode(any())).thenReturn("encodedPassword");
         when(confirmationTokenServiceImpl.createToken(any())).thenReturn("token");
 
-        // Act
         ResponseEntity<String> response = authController.register(createUserRequest);
 
-        // Assert
         verify(userServiceImpl).save(any(User.class));
         verify(authEmailServiceImpl).sendConfirmationEmail(any(), any());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -70,7 +68,7 @@ class AuthControllerTest {
 
     @Test
     void confirmAccountShouldReturnSuccessMessageWhenTokenIsValid() {
-        // Arrange
+
         String token = "validToken";
         ConfirmationToken confirmationToken = new ConfirmationToken();
         confirmationToken.setConfirmedAt(null);
@@ -80,17 +78,15 @@ class AuthControllerTest {
 
         when(confirmationTokenServiceImpl.findByTokenAndTokenType(token, TokenType.REGISTRATION)).thenReturn(Optional.of(confirmationToken));
 
-        // Act
         String response = authController.confirmAccount(token);
 
-        // Assert
         verify(confirmationTokenServiceImpl).setConfirmedAt(token, TokenType.REGISTRATION);
         assertEquals("Акаунт успішно підтверджено! Можете закрити сторінку!", response);
     }
 
     @Test
     void processForgotPasswordShouldReturnOkWhenUserFound() {
-        // Arrange
+
         String email = "test@example.com";
         User user = new User();
         user.setEmail(email);
@@ -98,10 +94,8 @@ class AuthControllerTest {
         when(userServiceImpl.findUserByEmail(email)).thenReturn(Optional.of(user));
         when(confirmationTokenServiceImpl.createPasswordResetTokenForUser(user)).thenReturn("resetToken");
 
-        // Act
         ResponseEntity<String> response = authController.processForgotPassword(email);
 
-        // Assert
         verify(authEmailServiceImpl).sendResetEmail(email, "http://localhost:3000/password-reset?token=resetToken");
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Лист для скидання пароля надіслано", response.getBody());
@@ -109,7 +103,7 @@ class AuthControllerTest {
 
     @Test
     void resetPasswordShouldReturnOkWhenTokenIsValid() {
-        // Arrange
+
         String token = "validResetToken";
         PasswordValidator password = PasswordValidator.create("Password123");
         ConfirmationToken resetToken = new ConfirmationToken();
@@ -118,44 +112,18 @@ class AuthControllerTest {
         User user = new User();
         user.setEmail("test@example.com");
 
-        // Установите пользователя в токен
         resetToken.setUser(user);
 
         when(confirmationTokenServiceImpl.findByTokenAndTokenType(token, TokenType.PASSWORD_RESET)).thenReturn(Optional.of(resetToken));
         when(passwordEncoder.encode(any())).thenReturn("encodedNewPassword");
 
-        // Act
         ResponseEntity<String> response = authController.resetPassword(token, password);
 
-        // Assert
         verify(userServiceImpl).save(user);
         verify(confirmationTokenServiceImpl).findByTokenAndTokenType(token, TokenType.PASSWORD_RESET);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Пароль успішно скинуто", response.getBody());
     }
 
-
-//    @Test
-//    void resetPasswordShouldReturnOkWhenTokenIsValid() {
-//        // Arrange
-//        String token = "validResetToken";
-//        PasswordValidator password = PasswordValidator.create("Password123");
-//        ConfirmationToken resetToken = new ConfirmationToken();
-//        resetToken.setExpiresAt(LocalDateTime.now().plusDays(1));
-//        User user = new User();
-//        user.setEmail("test@example.com");
-//
-//        when(confirmationTokenServiceImpl.findByTokenAndTokenType(token, TokenType.PASSWORD_RESET)).thenReturn(Optional.of(resetToken));
-//        when(passwordEncoder.encode(any())).thenReturn("encodedNewPassword");
-//
-//        // Act
-//        ResponseEntity<String> response = authController.resetPassword(token, password);
-//
-//        // Assert
-//        verify(userServiceImpl).save(user);
-//        verify(confirmationTokenServiceImpl).deleteConfirmationToken(token, TokenType.PASSWORD_RESET);
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals("Пароль успішно скинуто", response.getBody());
-//    }
 }
 

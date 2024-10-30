@@ -48,6 +48,8 @@ jobs:
     #     -Dsonar.organization=Final_Project_Linkedin \
     #     -Dsonar.host.url=https://sonarcloud.io
      
+    - name: Generate JaCoCo coverage report
+      run: mvn jacoco:report
 
     - name: Upload coverage to Coveralls
       uses: coverallsapp/github-action@v2

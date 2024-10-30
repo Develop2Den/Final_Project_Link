@@ -1,0 +1,1 @@
+web: java -jar target/Final_Project_Linkedin.jar

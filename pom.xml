@@ -194,8 +194,6 @@
         <version>3.2.0</version>
         <executions>
           <execution>
-            <id>validate</id>
-            <phase>validate</phase>
             <configuration>
               <configLocation>app/checkstyle_config.xml</configLocation>
               <consoleOutput>true</consoleOutput>

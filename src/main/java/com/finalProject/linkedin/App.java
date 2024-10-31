@@ -9,8 +9,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class App {
     public static void main(String[] args) {
-        Dotenv dotenv = Dotenv.configure().load();
-        dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+        if (!isRunningLocally()) {
+            Dotenv dotenv = Dotenv.configure().load();
+            dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+        }
         SpringApplication.run(App.class, args);
+    }
+
+    private static boolean isRunningLocally() {
+        return "false".equals(System.getenv("RUNNING_LOCALLY"));
     }
 }

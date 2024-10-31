@@ -13,6 +13,7 @@ import com.finalProject.linkedin.service.serviceImpl.ConfirmationTokenServiceImp
 import com.finalProject.linkedin.service.serviceImpl.UserServiceImpl;
 import com.finalProject.linkedin.utils.enums.TokenType;
 import com.finalProject.linkedin.utils.password.PasswordValidator;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -87,6 +88,8 @@ class AuthControllerTest {
     @Test
     void processForgotPasswordShouldReturnOkWhenUserFound() {
 
+        Dotenv dotenv = Dotenv.load();
+        String frontUrl = dotenv.get("FRONT_URL");
         String email = "test@example.com";
         User user = new User();
         user.setEmail(email);
@@ -96,7 +99,7 @@ class AuthControllerTest {
 
         ResponseEntity<String> response = authController.processForgotPassword(email);
 
-        verify(authEmailServiceImpl).sendResetEmail(email, "http://localhost:3000/password-reset?token=resetToken");
+        verify(authEmailServiceImpl).sendResetEmail(email, frontUrl + "/password-reset?token=resetToken");
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Лист для скидання пароля надіслано", response.getBody());
     }

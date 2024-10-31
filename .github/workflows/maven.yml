@@ -1,3 +1,4 @@
+
 name: Java CI with Maven
 
 on:
@@ -11,51 +12,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up JDK 21
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '21'
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
 
-    - name: Cache Maven packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
-    - name: Install dependencies and run tests
-      run: mvn clean install
+      - name: Install dependencies and run tests
+        env:
+          FRONT_URL: ${{ secrets.FRONT_URL }}
+        run: mvn clean install
 
-    - name: Run JUnit and Mockito tests
-      run: mvn test
-      env:
-        CI: true
+      - name: Checkstyle Code Style Check
+        run: mvn clean validate
 
-    - name: Checkstyle Code Style Check
-      run: mvn clean validate
+      - name: Generate JaCoCo coverage report
+        run: mvn jacoco:report
 
-    # - name: SonarCloud Analysis
-    #   env:
-    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #   run: |
-    #     mvn sonar:sonar \
-    #     -Dsonar.projectKey=develop2den \
-    #     -Dsonar.organization=Final_Project_Linkedin \
-    #     -Dsonar.host.url=https://sonarcloud.io
-     
-    - name: Generate JaCoCo coverage report
-      run: mvn jacoco:report
+      # - name: Coveralls GitHub Action
+      #   uses: coverallsapp/github-action@v2.3.4
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
+      #     path-to-lcov: target/site/jacoco/jacoco.xml
 
-    # - name: Coveralls GitHub Action
-    #   uses: coverallsapp/github-action@v2.3.4
-    #   with:
-    #     github-token: ${{ secrets.GITHUB_TOKEN }}
-    #     coveralls-token: ${{ secrets.COVERALLS_TOKEN }}
-    #     path-to-lcov: target/site/jacoco/jacoco.xml
-
-
+      # - name: SonarCloud Analysis
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   run: |
+      #     mvn sonar:sonar \
+      #     -Dsonar.projectKey=develop2den \
+      #     -Dsonar.organization=Final_Project_Linkedin \
+      #     -Dsonar.host.url=https://sonarcloud.io

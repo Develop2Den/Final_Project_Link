@@ -27,4 +27,4 @@ COPY --from=build /app/target/Final_Project_Linkedin.jar /app/application.jar
 #CMD ["java", "-jar", "/app/application.jar"]
 
 # Указываем команду для запуска приложения
-ENTRYPOINT ["java", "-jar", "app/target/Final_Project_Linkedin.jar"]
+ENTRYPOINT ["java", "-jar", "target/Final_Project_Linkedin.jar"]

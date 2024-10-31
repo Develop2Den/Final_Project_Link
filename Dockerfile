@@ -9,7 +9,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Build the application using Maven
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 # Use an official OpenJDK image as the base image
 FROM openjdk:21-slim

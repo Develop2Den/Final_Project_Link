@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      FRONT_URL: ${{ secrets.FRONT_URL }}
 
     steps:
     - name: Checkout code

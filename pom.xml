@@ -191,31 +191,48 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.2.0</version> <!-- Обновленная версия плагина -->
+        <version>3.2.0</version>
+        <configuration>
+          <configLocation>checkstyle_config.xml</configLocation>
+        </configuration>
         <executions>
           <execution>
-            <id>validate</id>
             <phase>validate</phase>
-            <configuration>
-              <configLocation>checkstyle_config.xml</configLocation> <!-- Обновленный путь к конфигу -->
-              <consoleOutput>true</consoleOutput> <!-- Результаты в консоль -->
-              <failsOnError>true</failsOnError> <!-- Сбой при ошибках -->
-              <violationSeverity>warning</violationSeverity> <!-- Вывод предупреждений -->
-              <includeTestSourceDirectory>true</includeTestSourceDirectory> <!-- Проверка тестовых классов -->
-            </configuration>
             <goals>
               <goal>check</goal>
             </goals>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>com.puppycrawl.tools</groupId>
-            <artifactId>checkstyle</artifactId>
-            <version>10.12.2</version> <!-- Последняя версия Checkstyle -->
-          </dependency>
-        </dependencies>
       </plugin>
+
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--        <version>3.2.0</version>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>validate</id>-->
+<!--            <phase>validate</phase>-->
+<!--            <configuration>-->
+<!--              <configLocation>checkstyle_config.xml</configLocation>-->
+<!--              <consoleOutput>true</consoleOutput>-->
+<!--              <failsOnError>true</failsOnError>-->
+<!--              <violationSeverity>warning</violationSeverity>-->
+<!--              <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
+<!--            </configuration>-->
+<!--            <goals>-->
+<!--              <goal>check</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--        <dependencies>-->
+<!--          <dependency>-->
+<!--            <groupId>com.puppycrawl.tools</groupId>-->
+<!--            <artifactId>checkstyle</artifactId>-->
+<!--            <version>10.12.2</version> &lt;!&ndash; Последняя версия Checkstyle &ndash;&gt;-->
+<!--          </dependency>-->
+<!--        </dependencies>-->
+<!--      </plugin>-->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

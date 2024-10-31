@@ -27,6 +27,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+
       - name: Create .env file
         run: |
           echo "FRONT_URL=${{ secrets.FRONT_URL }}" >> .env 
@@ -56,5 +57,4 @@ jobs:
       #     -Dsonar.projectKey=develop2den \
       #     -Dsonar.organization=Final_Project_Linkedin \
       #     -Dsonar.host.url=https://sonarcloud.io
-
 

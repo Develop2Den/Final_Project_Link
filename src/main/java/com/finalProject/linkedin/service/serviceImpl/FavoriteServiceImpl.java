@@ -6,13 +6,8 @@ import com.finalProject.linkedin.entity.Favorite;
 import com.finalProject.linkedin.repository.FavoriteRepository;
 import com.finalProject.linkedin.service.serviceIR.FavoriteService;
 import com.finalProject.linkedin.utils.enums.TargetType;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 

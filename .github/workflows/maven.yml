@@ -9,8 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      FRONT_URL: ${{ secrets.FRONT_URL }}
 
     steps:
     - name: Checkout code
@@ -30,8 +28,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
 
-    # - name: Install dependencies and run tests
-    #   run: mvn clean install
+    - name: Install dependencies and run tests
+      env:
+          FRONT_URL: ${{ secrets.FRONT_URL }}
+      run: mvn clean install
 
     - name: Run JUnit and Mockito tests
       run: mvn test

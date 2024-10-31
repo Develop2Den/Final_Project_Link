@@ -34,15 +34,13 @@ class FavoriteControllerTest {
 
     @Test
     void toggleFavoriteShouldReturnFavoriteResponse() {
-        // Arrange
-        CreateFavoriteReq req = new CreateFavoriteReq(); // заполните необходимые поля
-        CreateFavoriteRes res = new CreateFavoriteRes(); // заполните необходимые поля
+
+        CreateFavoriteReq req = new CreateFavoriteReq();
+        CreateFavoriteRes res = new CreateFavoriteRes();
         when(favoriteService.addFavorite(any(CreateFavoriteReq.class))).thenReturn(res);
 
-        // Act
         ResponseEntity<CreateFavoriteRes> response = favoriteController.toggleFavorite(req);
 
-        // Assert
         verify(favoriteService).addFavorite(req);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(res, response.getBody());
@@ -50,31 +48,27 @@ class FavoriteControllerTest {
 
     @Test
     void removeFavoriteShouldReturnNoContent() {
-        // Arrange
         Long userId = 1L;
         Long targetId = 2L;
         TargetType targetType = TargetType.PROFILE_LIKE; // Убедитесь, что это правильный тип
 
-        // Act
+
         ResponseEntity<Void> response = favoriteController.removeFavorite(userId, targetId, targetType);
 
-        // Assert
         verify(favoriteService).removeFavorite(userId, targetId, targetType);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
     @Test
     void getFavoritesByTargetShouldReturnFavoritesList() {
-        // Arrange
+
         Long targetId = 1L;
         TargetType targetType = TargetType.POST_LIKE; // Убедитесь, что это правильный тип
         Favorite favorite = new Favorite(); // заполните необходимые поля
         when(favoriteService.getFavoritesByTarget(targetId, targetType)).thenReturn(Arrays.asList(favorite));
 
-        // Act
         ResponseEntity<List<Favorite>> response = favoriteController.getFavoritesByTarget(targetId, targetType);
 
-        // Assert
         verify(favoriteService).getFavoritesByTarget(targetId, targetType);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(Arrays.asList(favorite), response.getBody());

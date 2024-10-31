@@ -27,7 +27,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-            
+
       - name: Create .env file
         run: |
           echo "FRONT_URL=${{ secrets.FRONT_URL }}" >> .env 
@@ -35,6 +35,7 @@ jobs:
 
       - name: Install dependencies and run tests
         run: mvn clean install
+
 
       - name: Checkstyle Code Style Check
         run: mvn clean validate

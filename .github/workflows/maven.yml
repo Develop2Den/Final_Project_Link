@@ -28,10 +28,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Create .env file
+        run: |
+          echo "FRONT_URL=${{ secrets.FRONT_URL }}" >> .env 
+          echo "SPRING_CONFIG_ACTIVATE_ON_PROFILE=${{ secrets.SPRING_CONFIG_ACTIVATE_ON_PROFILE}}" >> .env
+
       - name: Install dependencies and run tests
-        env:
-          FRONT_URL: ${{ secrets.FRONT_URL }}
-          SPRING_CONFIG_ACTIVATE_ON_PROFILE: ${{ secrets.SPRING_CONFIG_ACTIVATE_ON_PROFILE}}
         run: mvn clean install
 
       - name: Checkstyle Code Style Check

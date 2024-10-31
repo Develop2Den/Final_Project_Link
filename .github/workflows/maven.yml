@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies and run tests
         env:
           FRONT_URL: ${{ secrets.FRONT_URL }}
-        run: mvn clean install
+        run: mvn clean install -e -X
 
       - name: Checkstyle Code Style Check
         run: mvn clean validate

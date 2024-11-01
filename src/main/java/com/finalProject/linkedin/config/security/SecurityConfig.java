@@ -69,6 +69,11 @@ public class SecurityConfig {
                         .requestMatchers("/profiles/**").authenticated()
                         .anyRequest().authenticated()
                 )
+                .sessionManagement(session -> session
+                        .sessionFixation().newSession() 
+                        .maximumSessions(1) 
+                        .maxSessionsPreventsLogin(false)
+                )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .successHandler(this::oauth2SuccessHandler)

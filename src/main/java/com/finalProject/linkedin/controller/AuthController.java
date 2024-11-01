@@ -9,7 +9,6 @@ import com.finalProject.linkedin.service.serviceImpl.AuthEmailServiceImpl;
 import com.finalProject.linkedin.service.serviceImpl.ConfirmationTokenServiceImpl;
 import com.finalProject.linkedin.service.serviceImpl.UserServiceImpl;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

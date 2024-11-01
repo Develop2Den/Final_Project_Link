@@ -14,7 +14,7 @@ public class App {
         //     dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
         // }
         SpringApplication.run(App.class, args);
-    // }
+    }
 
     // private static boolean isRunningLocally() {
     //     return "false".equals(System.getenv("RUNNING_LOCALLY"));

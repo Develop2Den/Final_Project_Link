@@ -9,8 +9,8 @@ import com.finalProject.linkedin.service.serviceImpl.AuthEmailServiceImpl;
 import com.finalProject.linkedin.service.serviceImpl.ConfirmationTokenServiceImpl;
 import com.finalProject.linkedin.service.serviceImpl.UserServiceImpl;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,17 +23,35 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@AllArgsConstructor
 @RequestMapping("/")
 public class AuthController {
 
     private final AuthEmailServiceImpl authEmailServiceImpl;
     private final UserServiceImpl userServiceImpl;
-    private ConfirmationTokenServiceImpl confirmationTokenServiceImpl;
+    private final ConfirmationTokenServiceImpl confirmationTokenServiceImpl;
     private final PasswordEncoder passwordEncoder;
+    private final String FRONT_URL;
+    private final String APP_URL;
+
+    public AuthController(
+            AuthEmailServiceImpl authEmailServiceImpl,
+            UserServiceImpl userServiceImpl,
+            ConfirmationTokenServiceImpl confirmationTokenServiceImpl,
+            PasswordEncoder passwordEncoder,
+            @Value("${FRONT_URL}") String FRONT_URL,
+            @Value("${APP_URL}") String APP_URL
+    ) {
+        this.authEmailServiceImpl = authEmailServiceImpl;
+        this.userServiceImpl = userServiceImpl;
+        this.confirmationTokenServiceImpl = confirmationTokenServiceImpl;
+        this.passwordEncoder = passwordEncoder;
+        this.FRONT_URL = FRONT_URL;
+        this.APP_URL = APP_URL;
+    }
 
     @PostMapping("/auth")
     public ResponseEntity<String> register(@RequestBody @Valid CreateUserReq createUserRequest) {
+
         if (userServiceImpl.findUserByEmail(createUserRequest.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User exists");
         }
@@ -47,7 +65,7 @@ public class AuthController {
         log.info("Успішно зареєстровано з електронною адресою: {}", createUserRequest.getEmail());
 
         String token = confirmationTokenServiceImpl.createToken(newUser);
-        String confirmationLink ="http://localhost:9000/confirm?token=" + token;
+        String confirmationLink = APP_URL + "/confirm?token=" + token;
         authEmailServiceImpl.sendConfirmationEmail(newUser.getEmail(), confirmationLink);
         return ResponseEntity.status(HttpStatus.CREATED).body("Користувач зареєстрований. Перевірте свою електронну пошту для підтвердження.");
     }
@@ -80,6 +98,7 @@ public class AuthController {
 
     @PostMapping("/password-forgot")
     public ResponseEntity<String> processForgotPassword(@RequestParam("email") String email) {
+
         log.warn("Імейл: " + email);
         Optional<User> user = userServiceImpl.findUserByEmail(email);
         if (user.isEmpty()) {
@@ -87,7 +106,7 @@ public class AuthController {
         }
 
         String token = confirmationTokenServiceImpl.createPasswordResetTokenForUser(user.get());
-        String confirmationLink = "http://localhost:3000/password-reset?token=" + token;
+        String confirmationLink = FRONT_URL + "/password-reset?token=" + token;
         authEmailServiceImpl.sendResetEmail(user.get().getEmail(), confirmationLink);
 
         return ResponseEntity.ok("Лист для скидання пароля надіслано");

@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 
 /**
@@ -27,6 +26,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
     private final ProfileMapper profileMapper;
+
     @Override
     @Transactional
     public CreateProfileResp createProfile(CreateProfileReq createProfileReq) {
@@ -36,6 +36,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         return profileMapper.toCreateProfileResp(profile);
     }
+
     @Override
     public CreateProfileResp getProfileById(Long profileId) {
         Profile profile = profileRepository.findById(profileId)

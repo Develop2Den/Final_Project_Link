@@ -3,7 +3,6 @@ package com.finalProject.linkedin.service.serviceImpl;
 import com.finalProject.linkedin.dto.request.post.CreatePostReq;
 import com.finalProject.linkedin.dto.responce.post.CreatePostResponse;
 import com.finalProject.linkedin.entity.Post;
-import com.finalProject.linkedin.entity.Profile;
 import com.finalProject.linkedin.exception.NotFoundException;
 import com.finalProject.linkedin.mapper.PostMapper;
 import com.finalProject.linkedin.repository.PostRepository;

@@ -49,7 +49,7 @@ public class PostController {
     public ResponseEntity<Page<CreatePostResponse>> getAllPostsForUser (
             @PathVariable Long userId ,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size){
+            @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(postServiceImp.getAllPostsForUser(userId,page,size));
     }
 
@@ -58,7 +58,7 @@ public class PostController {
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Page<CreatePostResponse>> getAllPosts (
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size){
+            @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(postServiceImp.getAllPosts(page,size));
     }
 

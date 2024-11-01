@@ -52,6 +52,11 @@ secret=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
  password=cg9vWeo3yrVF;
 
 ```
+### Токен SonarQube
+```
+token - a9f815397eaf09418739108a689c5aa2b98cc9bb
+
+```
 
 
 

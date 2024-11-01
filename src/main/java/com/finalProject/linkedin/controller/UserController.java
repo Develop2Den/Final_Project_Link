@@ -1,6 +1,5 @@
 package com.finalProject.linkedin.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.finalProject.linkedin.dto.request.user.CreateUserReq;
 import com.finalProject.linkedin.dto.responce.user.CreateUserRes;
 import com.finalProject.linkedin.service.serviceImpl.UserServiceImpl;

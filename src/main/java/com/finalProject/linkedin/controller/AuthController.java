@@ -85,9 +85,11 @@ public class AuthController {
 
     @PostMapping("/password-forgot")
     public ResponseEntity<String> processForgotPassword(@RequestParam("email") String email) {
+
         Dotenv dotenv = Dotenv.load();
         String frontUrl = dotenv.get("FRONT_URL");
         log.warn("Імейл: " + email);
+
         Optional<User> user = userServiceImpl.findUserByEmail(email);
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");

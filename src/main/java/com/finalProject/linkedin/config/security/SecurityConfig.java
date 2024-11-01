@@ -76,8 +76,15 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/profiles", true)
+//                        .defaultSuccessUrl("/profiles", true)
                         .successHandler((req, res, auth) -> {
+                          res.setStatus(HttpServletResponse.SC_OK); // Устанавливаем статус 200
+                          res.setContentType("application/json");
+                          res.setCharacterEncoding("UTF-8");
+
+                                    // Отправляем URL или сообщение об успешной аутентификации
+                          res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/profiles\"}");
+                          res.getWriter().flush();
                             if (auth != null) {
                                 res.sendRedirect("/profiles");
                             } else {
@@ -91,6 +98,23 @@ public class SecurityConfig {
                         )
                         .permitAll()
                 )
+                // .formLogin(form -> form
+                //         .loginPage("/login")
+                //         .defaultSuccessUrl("/profiles", true)
+                //         .successHandler((req, res, auth) -> {
+                //             if (auth != null) {
+                //                 res.sendRedirect("/profiles");
+                //             } else {
+                //                 res.sendRedirect("/login");
+                //             }
+                //         })
+                //         .failureHandler((request, response, exception) -> {
+                //                     log.error("Authentication failed: {}", exception.getMessage());
+                //                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
+                //                 }
+                //         )
+                //         .permitAll()
+                // )
                 .rememberMe(rememberMe -> rememberMe
                         .key("uniqueAndSecret") // ключ шифрования для cookies
                         .tokenValiditySeconds(7 * 24 * 60 * 60) // одна неделя

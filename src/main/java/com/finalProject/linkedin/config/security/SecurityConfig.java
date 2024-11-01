@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -39,9 +40,10 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    @Value("${FRONT_URL}")
+    private String FRONT_URL;
+
     private final UserRepository userRepository;
-    Dotenv dotenv = Dotenv.load();
-    String frontUrl = dotenv.get("FRONT_URL");
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -110,9 +112,9 @@ public class SecurityConfig {
 
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()) {
-            response.sendRedirect(frontUrl + "/registrations");
+            response.sendRedirect(FRONT_URL + "/registrations");
         } else {
-            response.sendRedirect(frontUrl + "/customer");
+            response.sendRedirect(FRONT_URL + "/customer");
         }
     }
 

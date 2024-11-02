@@ -67,7 +67,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html")
                         .permitAll()
                         .requestMatchers("/profiles/**").authenticated()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")

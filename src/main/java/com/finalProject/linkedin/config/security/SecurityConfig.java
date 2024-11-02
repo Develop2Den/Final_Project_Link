@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -28,8 +29,11 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.OK;
@@ -46,11 +50,12 @@ public class SecurityConfig {
     private final UserRepository userRepository;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, SameSiteCookieFilter sameSiteCookieFilter) throws Exception {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
+                .addFilterAfter(sameSiteCookieFilter, SecurityContextPersistenceFilter.class)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
@@ -89,11 +94,11 @@ public class SecurityConfig {
                           res.setCharacterEncoding("UTF-8");
                           res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/profiles\"}");
                           res.getWriter().flush();
-                            if (auth != null) {
-                                res.sendRedirect("/profiles");
-                            } else {
-                                res.sendRedirect("/login");
-                            }
+//                            if (auth != null) {
+//                                res.sendRedirect("/profiles");
+//                            } else {
+//                                res.sendRedirect("/login");
+//                            }
                         })
                         .failureHandler((request, response, exception) -> {
                                     log.error("Authentication failed: {}", exception.getMessage());
@@ -129,6 +134,7 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .invalidateHttpSession(true)
                         .permitAll());
+
         return http.build();
     }
 

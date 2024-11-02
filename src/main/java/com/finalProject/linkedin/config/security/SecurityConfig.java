@@ -3,6 +3,7 @@ package com.finalProject.linkedin.config.security;
 import com.finalProject.linkedin.entity.User;
 import com.finalProject.linkedin.repository.UserRepository;
 import com.finalProject.linkedin.service.serviceImpl.UserServiceImpl;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,13 +29,9 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 import java.io.IOException;
 import java.util.Optional;
-
-import static org.springframework.http.HttpStatus.OK;
 
 @Log4j2
 @Configuration
@@ -48,11 +46,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .addFilterBefore(new SameSiteCookieFilter(), BasicAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
@@ -73,7 +69,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
-                        .sessionFixation().newSession()
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // указываем политику создания сессии
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(false)
                 )
@@ -84,43 +80,29 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-//                        .defaultSuccessUrl("/profiles", true)
                         .successHandler((req, res, auth) -> {
-                          res.setStatus(HttpServletResponse.SC_OK);
-                          res.setContentType("application/json");
-                          res.setCharacterEncoding("UTF-8");
-                          res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/profiles\"}");
-                          res.getWriter().flush();
-//                            if (auth != null) {
-//                                res.sendRedirect("/profiles");
-//                            } else {
-//                                res.sendRedirect("/login");
-//                            }
+                            res.setStatus(HttpServletResponse.SC_OK);
+                            res.setContentType("application/json");
+                            res.setCharacterEncoding("UTF-8");
+                            res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/profiles\"}");
+                            res.getWriter().flush();
+
+                            // Установка куки с SameSite=None
+                            Cookie cookie = new Cookie("JSESSIONID", req.getSession().getId());
+                            cookie.setHttpOnly(true);
+                            cookie.setSecure(true);
+                            cookie.setPath("/");
+                            cookie.setDomain(req.getRequestURL().toString());
+                            cookie.setMaxAge(604800); // Время жизни куки: 1 неделя
+                            cookie.setAttribute("SameSite", "None"); // Установка SameSite=None
+                            res.addCookie(cookie);
                         })
                         .failureHandler((request, response, exception) -> {
-                                    log.error("Authentication failed: {}", exception.getMessage());
-                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
-                                }
-                        )
+                            log.error("Authentication failed: {}", exception.getMessage());
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
+                        })
                         .permitAll()
                 )
-                // .formLogin(form -> form
-                //         .loginPage("/login")
-                //         .defaultSuccessUrl("/profiles", true)
-                //         .successHandler((req, res, auth) -> {
-                //             if (auth != null) {
-                //                 res.sendRedirect("/profiles");
-                //             } else {
-                //                 res.sendRedirect("/login");
-                //             }
-                //         })
-                //         .failureHandler((request, response, exception) -> {
-                //                     log.error("Authentication failed: {}", exception.getMessage());
-                //                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
-                //                 }
-                //         )
-                //         .permitAll()
-                // )
                 .rememberMe(rememberMe -> rememberMe
                         .key("uniqueAndSecret") // ключ шифрования для cookies
                         .tokenValiditySeconds(7 * 24 * 60 * 60) // одна неделя
@@ -150,7 +132,7 @@ public class SecurityConfig {
     @Bean
     public LogoutSuccessHandler customLogoutSuccessHandler() {
         return (HttpServletRequest req, HttpServletResponse res, Authentication authentication) -> {
-            res.setStatus(OK.value());
+            res.setStatus(HttpServletResponse.SC_OK);
             res.getWriter().flush();
         };
     }
@@ -158,19 +140,17 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(UserServiceImpl userServiceImpl) {
         return email -> {
-
             Boolean isVerified = userServiceImpl.isUserVerified(email);
             if (isVerified == null || !isVerified) {
-                log.warn("Юзер не подтвержден: {}", email);
-                throw new BadCredentialsException("Почта не подтверждена!.");
+                log.warn("User not verified: {}", email);
+                throw new BadCredentialsException("Email not verified!");
             }
 
             User user = userServiceImpl.findUserByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-
-            log.warn("Имейл: {}", email);
-            log.warn("Зашифрованный пароль из базы данных: {}", user.getPassword());
+            log.warn("Email: {}", email);
+            log.warn("Encrypted password from database: {}", user.getPassword());
 
             return org.springframework.security.core.userdetails.User.builder()
                     .username(user.getEmail())

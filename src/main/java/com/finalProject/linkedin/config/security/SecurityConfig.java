@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -69,28 +70,55 @@ public class SecurityConfig {
                         .requestMatchers("/profiles/**").authenticated()
                         .anyRequest().permitAll()
                 )
+//                .sessionManagement(session -> session
+//                        .sessionFixation().newSession()
+//                        .maximumSessions(1)
+//                        .maxSessionsPreventsLogin(false)
+//                )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .successHandler(this::oauth2SuccessHandler)
                         .permitAll()
                 )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/profiles", true)
-                        .successHandler((req, res, auth) -> {
-                            if (auth != null) {
-                                res.sendRedirect("/profiles");
-                            } else {
-                                res.sendRedirect("/login");
-                            }
-                        })
-                        .failureHandler((request, response, exception) -> {
-                                    log.error("Authentication failed: {}", exception.getMessage());
-                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
-                                }
-                        )
-                        .permitAll()
-                )
+//                .formLogin(form -> form
+//                        .loginPage("/login")
+////                        .defaultSuccessUrl("/profiles", true)
+//                        .successHandler((req, res, auth) -> {
+//                          res.setStatus(HttpServletResponse.SC_OK);
+//                          res.setContentType("application/json");
+//                          res.setCharacterEncoding("UTF-8");
+//                          res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/profiles\"}");
+//                          res.getWriter().flush();
+//                            if (auth != null) {
+//                                res.sendRedirect("/profiles");
+//                            } else {
+//                                res.sendRedirect("/login");
+//                            }
+//                        })
+//                        .failureHandler((request, response, exception) -> {
+//                                    log.error("Authentication failed: {}", exception.getMessage());
+//                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
+//                                }
+//                        )
+//                        .permitAll()
+//                )
+                 .formLogin(form -> form
+                         .loginPage("/login")
+                         .defaultSuccessUrl("/profiles", true)
+                         .successHandler((req, res, auth) -> {
+                             if (auth != null) {
+                                 res.sendRedirect("/profiles");
+                             } else {
+                                 res.sendRedirect("/login");
+                             }
+                         })
+                         .failureHandler((request, response, exception) -> {
+                                     log.error("Authentication failed: {}", exception.getMessage());
+                                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
+                                 }
+                         )
+                         .permitAll()
+                 )
                 .rememberMe(rememberMe -> rememberMe
                         .key("uniqueAndSecret") // ключ шифрования для cookies
                         .tokenValiditySeconds(7 * 24 * 60 * 60) // одна неделя

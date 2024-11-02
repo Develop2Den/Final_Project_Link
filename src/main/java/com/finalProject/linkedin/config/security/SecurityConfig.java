@@ -27,6 +27,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 import java.io.IOException;
@@ -46,12 +47,12 @@ public class SecurityConfig {
     private final UserRepository userRepository;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, SameSiteCookieFilter sameSiteCookieFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .addFilterAfter(sameSiteCookieFilter, SecurityContextPersistenceFilter.class)
+                .addFilterBefore(new SameSiteCookieFilter(), BasicAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )

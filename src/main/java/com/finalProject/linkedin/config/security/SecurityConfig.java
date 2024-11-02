@@ -69,7 +69,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // указываем политику создания сессии
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(false)
                 )
@@ -92,7 +92,6 @@ public class SecurityConfig {
                             cookie.setHttpOnly(true);
                             cookie.setSecure(true);
                             cookie.setPath("/");
-                            cookie.setDomain(req.getRequestURL().toString());
                             cookie.setMaxAge(604800); // Время жизни куки: 1 неделя
                             cookie.setAttribute("SameSite", "None"); // Установка SameSite=None
                             res.addCookie(cookie);

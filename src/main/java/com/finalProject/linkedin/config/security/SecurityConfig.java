@@ -68,7 +68,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html")
                         .permitAll()
                         .requestMatchers("/profiles/**").authenticated()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
 //                .sessionManagement(session -> session
 //                        .sessionFixation().newSession()

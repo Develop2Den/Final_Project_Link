@@ -45,11 +45,7 @@ public class MessageServiceImpl implements MessageService {
         return messageRepository.findAll(pageable).map(messageMapper::toMessageResp).toList();
     }
 
-    // todo: optional method
-    @Override
-    public MessageResp update(Long id, MessageReq MessageReq) {
-        return null;
-    }
+
 
     @Override
     public List<MessageResp> getChatMessages(Long id1, Long id2, Pageable pageable) {

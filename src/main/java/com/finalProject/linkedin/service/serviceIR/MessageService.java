@@ -14,8 +14,6 @@ public interface MessageService {
 
     List<MessageResp> findAll(Pageable pageable);
 
-    MessageResp update(Long id, MessageReq MessageReq);
-
     List<MessageResp> getChatMessages(Long id1, Long id2, Pageable pageable);
 
     List<GetMessageWithProfileResp> findLatestMessagesForUser(Long id1, Pageable pageable);

@@ -69,10 +69,10 @@ public class MessageController {
     @Operation(summary = "Get paginated messages between two different users", description = "Get list of messages with pagination between user by id and other users. 1 message for each pair")
     @ApiResponse(responseCode = "200")
     @GetMapping("/latest")
-    public List<GetMessageWithProfileResp> getAllMessagesLatest
-            (@RequestParam long id,
-             @RequestParam(defaultValue = "0") int page,
-             @RequestParam(defaultValue = "5") int size) {
+    public List<GetMessageWithProfileResp> getAllMessagesLatest(
+            @RequestParam long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return messageService.findLatestMessagesForUser(id, pageable);
     }

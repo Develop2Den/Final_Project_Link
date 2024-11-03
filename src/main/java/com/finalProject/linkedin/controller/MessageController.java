@@ -66,8 +66,7 @@ public class MessageController {
         return messageService.getChatMessages(id1, id2, pageable);
     }
 
-    @Operation(summary = "Get paginated messages between two different users",
-            description = "Get list of messages with pagination between user by id and other users. 1 message for each pair  ")
+    @Operation(summary = "Get paginated messages between two different users", description = "Get list of messages with pagination between user by id and other users. 1 message for each pair")
     @ApiResponse(responseCode = "200")
     @GetMapping("/latest")
     public List<GetMessageWithProfileResp> getAllMessagesLatest

@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotNull;
 
 public record CreatePostReq(
         @NotNull(message = "Should be not empty")
-        Long Author_Id,
+        Long author_id,
         @NotNull(message = "Should be noy empty")
-        String Title,
+        String title,
         @NotNull(message = "Should be not empty")
-        String Content
+        String content
 ) {
 }

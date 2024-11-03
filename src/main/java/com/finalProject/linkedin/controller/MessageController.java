@@ -42,7 +42,8 @@ public class MessageController {
         return ResponseEntity.ok(messageService.create(MessageReq));
     }
 
-    @Operation(summary = "Mark message as deleted", description = "Mark message as logically deleted by setting 'deletedAt'")
+    @Operation(summary = "Mark message as deleted",
+            description = "Mark message as logically deleted by setting 'deletedAt'")
     @ApiResponse(responseCode = "204")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteMessage(@PathVariable long id) {
@@ -50,7 +51,8 @@ public class MessageController {
         else return ResponseEntity.notFound().build();
     }
 
-    @Operation(summary = "Get paginated messages between two users", description = "Get list of messages with pagination between two users by id, sorted by created date ")
+    @Operation(summary = "Get paginated messages between two users",
+            description = "Get list of messages with pagination between two users by id, sorted by created date ")
     @ApiResponse(responseCode = "200")
     @GetMapping("/chat")
     public List<MessageResp> getAllMessagesChat(
@@ -64,7 +66,8 @@ public class MessageController {
         return messageService.getChatMessages(id1, id2, pageable);
     }
 
-    @Operation(summary = "Get paginated messages between two different users", description = "Get list of messages with pagination between user by id and other users. 1 message for each pair  ")
+    @Operation(summary = "Get paginated messages between two different users",
+            description = "Get list of messages with pagination between user by id and other users. 1 message for each pair  ")
     @ApiResponse(responseCode = "200")
     @GetMapping("/latest")
     public List<GetMessageWithProfileResp> getAllMessagesLatest

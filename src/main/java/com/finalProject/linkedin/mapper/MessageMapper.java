@@ -14,9 +14,12 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface MessageMapper {
 
-    @Mapping(target = "name", expression = "java(message.getSenderId().equals(userId) ? message.getRecipient().getProfile().getName() : message.getSender().getProfile().getName())")
-    @Mapping(target = "surname", expression = "java(message.getSenderId().equals(userId) ? message.getRecipient().getProfile().getSurname() : message.getSender().getProfile().getSurname())")
-    @Mapping(target = "headerPhotoUrl", expression = "java(message.getSenderId().equals(userId) ? message.getRecipient().getProfile().getHeaderPhotoUrl() : message.getSender().getProfile().getHeaderPhotoUrl())")
+    @Mapping(target = "name", expression = "java(message.getSenderId().equals(userId) " +
+            "? message.getRecipient().getProfile().getName() : message.getSender().getProfile().getName())")
+    @Mapping(target = "surname", expression = "java(message.getSenderId().equals(userId) " +
+            "? message.getRecipient().getProfile().getSurname() : message.getSender().getProfile().getSurname())")
+    @Mapping(target = "headerPhotoUrl", expression = "java(message.getSenderId().equals(userId) " +
+            "? message.getRecipient().getProfile().getHeaderPhotoUrl() : message.getSender().getProfile().getHeaderPhotoUrl())")
 
    GetMessageWithProfileResp toMessageWithUserResp(Message message, @Context Long userId);
 

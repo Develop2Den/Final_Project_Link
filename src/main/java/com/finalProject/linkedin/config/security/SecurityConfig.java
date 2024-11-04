@@ -79,12 +79,9 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .defaultSuccessUrl("/profiles", true)
                         .successHandler((req, res, auth) -> {
-                            res.setStatus(HttpServletResponse.SC_OK);
-                            res.setContentType("application/json");
-                            res.setCharacterEncoding("UTF-8");
-                            res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/home\"}");
-                            res.getWriter().flush();
+
                              if (auth != null) {
                                  res.sendRedirect(FRONT_URL + "/home");
                              } else {

@@ -67,11 +67,11 @@ public class SecurityConfig {
                         .requestMatchers("/profiles/**").authenticated()
                         .anyRequest().authenticated()
                 )
-                // .sessionManagement(session -> session
-                //         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                //         .maximumSessions(1)
-                //         .maxSessionsPreventsLogin(false)
-                // )
+//                .sessionManagement(session -> session
+//                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+//                        .maximumSessions(1)
+//                        .maxSessionsPreventsLogin(false)
+//                )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .successHandler(this::oauth2SuccessHandler)
@@ -83,10 +83,10 @@ public class SecurityConfig {
                             res.setStatus(HttpServletResponse.SC_OK);
                             res.setContentType("application/json");
                             res.setCharacterEncoding("UTF-8");
-                            res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/profiles\"}");
+                            res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/home\"}");
                             res.getWriter().flush();
-                            if (auth != null) {
-                                 res.sendRedirect(FRONT_URL + "/customer");
+                             if (auth != null) {
+                                 res.sendRedirect(FRONT_URL + "/home");
                              } else {
                                  res.sendRedirect("/login");
                              }
@@ -119,7 +119,7 @@ public class SecurityConfig {
         if (user.isEmpty()) {
             response.sendRedirect(FRONT_URL + "/registrations");
         } else {
-            response.sendRedirect(FRONT_URL + "/customer");
+            response.sendRedirect(FRONT_URL + "/home");
         }
     }
 

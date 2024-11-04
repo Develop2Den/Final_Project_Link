@@ -29,7 +29,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.session.SessionManagementFilter;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -50,7 +50,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .addFilterBefore(new SameSiteCookieFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new SameSiteCookieFilter(), SessionManagementFilter.class)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
@@ -89,14 +89,14 @@ public class SecurityConfig {
                             res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/profiles\"}");
                             res.getWriter().flush();
 
-                            // // Установка куки с SameSite=None
-                            // Cookie cookie = new Cookie("JSESSIONID", req.getSession().getId());
-                            // cookie.setHttpOnly(true);
-                            // cookie.setSecure(true);
-                            // cookie.setPath("/");
-                            // cookie.setMaxAge(604800); // Время жизни куки: 1 неделя
-                            // cookie.setAttribute("SameSite", "None"); // Установка SameSite=None
-                            // res.addCookie(cookie);
+                            // Установка куки с SameSite=None
+                            Cookie cookie = new Cookie("JSESSIONID", req.getSession().getId());
+                            cookie.setHttpOnly(true);
+                            cookie.setSecure(true);
+                            cookie.setPath("/");
+                            cookie.setMaxAge(604800); // Время жизни куки: 1 неделя
+                            cookie.setAttribute("SameSite", "None"); // Установка SameSite=None
+                            res.addCookie(cookie);
                         })
                         .failureHandler((request, response, exception) -> {
                             log.error("Authentication failed: {}", exception.getMessage());
@@ -107,12 +107,19 @@ public class SecurityConfig {
                 .rememberMe(rememberMe -> rememberMe
                         .key("uniqueAndSecret") // ключ шифрования для cookies
                         .tokenValiditySeconds(7 * 24 * 60 * 60) // одна неделя
+                        .rememberMeCookieName("remember-me")
+                        .useSecureCookie(true)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessHandler(customLogoutSuccessHandler())
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies("JSESSIONID", "remember-me") // удаление куки при выходе
                         .invalidateHttpSession(true)
+//                        .permitAll()
+//                        .logoutUrl("/logout")
+//                        .logoutSuccessHandler(customLogoutSuccessHandler())
+//                        .deleteCookies("JSESSIONID")
+//                        .invalidateHttpSession(true)
                         .permitAll());
         return http.build();
     }

@@ -85,6 +85,11 @@ public class SecurityConfig {
                             res.setCharacterEncoding("UTF-8");
                             res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/profiles\"}");
                             res.getWriter().flush();
+                            if (auth != null) {
+                                 res.sendRedirect("/profiles");
+                             } else {
+                                 res.sendRedirect("/login");
+                             }
                         })
                         .failureHandler((request, response, exception) -> {
                             log.error("Authentication failed: {}", exception.getMessage());

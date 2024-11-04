@@ -1,32 +1,30 @@
 package com.finalProject.linkedin.config.security;
 
-import jakarta.servlet.*;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpServletResponseWrapper;
-import java.io.IOException;
-import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
 
-@Log4j2
+import java.io.IOException;
+
+@Component
 public class SameSiteCookieFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-
-        // Оборачиваем ответ, чтобы модифицировать заголовок Set-Cookie
-        HttpServletResponseWrapper responseWrapper = new HttpServletResponseWrapper(httpServletResponse) {
-            @Override
-            public void addHeader(String name, String value) {
-                if ("Set-Cookie".equalsIgnoreCase(name)) {
-                    value = value + "; SameSite=None; Secure";
-                    log.warn("Set-Cookie header modified: {}", value);
-                }
-                super.addHeader(name, value);
+        if (response instanceof HttpServletResponse res) {
+            // Получаем все Set-Cookie заголовки
+            for (String header : res.getHeaders("Set-Cookie")) {
+                // Добавляем SameSite=None; Secure к каждому заголовку Set-Cookie
+                String updatedHeader = header + "; SameSite=None; Secure";
+                res.addHeader("Set-Cookie", updatedHeader);
             }
-        };
-
-        chain.doFilter(request, responseWrapper);
+        }
+        chain.doFilter(request, response);
     }
 }
 

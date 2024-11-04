@@ -2,6 +2,7 @@ package com.finalProject.linkedin.config.security;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 
 public class SameSiteCookieFilter implements Filter {

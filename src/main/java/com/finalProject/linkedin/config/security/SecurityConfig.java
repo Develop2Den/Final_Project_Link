@@ -18,7 +18,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -47,7 +46,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                // .cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
@@ -67,11 +66,6 @@ public class SecurityConfig {
                         .requestMatchers("/profiles/**").authenticated()
                         .anyRequest().authenticated()
                 )
-//                .sessionManagement(session -> session
-//                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-//                        .maximumSessions(1)
-//                        .maxSessionsPreventsLogin(false)
-//                )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .successHandler(this::oauth2SuccessHandler)
@@ -83,7 +77,7 @@ public class SecurityConfig {
                         .successHandler((req, res, auth) -> {
 
                              if (auth != null) {
-                                 res.sendRedirect(FRONT_URL + "/home");
+                                 res.sendRedirect("/profiles");
                              } else {
                                  res.sendRedirect("/login");
                              }
@@ -97,6 +91,7 @@ public class SecurityConfig {
                 .rememberMe(rememberMe -> rememberMe
                         .key("uniqueAndSecret") // ключ шифрования для cookies
                         .tokenValiditySeconds(7 * 24 * 60 * 60) // одна неделя
+                        .useSecureCookie(true)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")

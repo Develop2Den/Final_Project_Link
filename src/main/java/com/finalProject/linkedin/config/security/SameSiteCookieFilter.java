@@ -4,7 +4,9 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class SameSiteCookieFilter implements Filter {
 
     @Override
@@ -18,6 +20,7 @@ public class SameSiteCookieFilter implements Filter {
             public void addHeader(String name, String value) {
                 if ("Set-Cookie".equalsIgnoreCase(name)) {
                     value = value + "; SameSite=None; Secure";
+                    log.warn("Set-Cookie header modified: {}", value);
                 }
                 super.addHeader(name, value);
             }

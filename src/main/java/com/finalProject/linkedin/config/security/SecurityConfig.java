@@ -86,7 +86,7 @@ public class SecurityConfig {
                             res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/profiles\"}");
                             res.getWriter().flush();
                             if (auth != null) {
-                                 res.sendRedirect("/user");
+                                 res.sendRedirect(FRONT_URL + "/customer");
                              } else {
                                  res.sendRedirect("/login");
                              }

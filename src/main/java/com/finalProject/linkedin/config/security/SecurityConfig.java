@@ -49,6 +49,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
+                .addFilterBefore(new SameSiteCookieFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
@@ -87,14 +88,14 @@ public class SecurityConfig {
                             res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/profiles\"}");
                             res.getWriter().flush();
 
-                            // Установка куки с SameSite=None
-                            Cookie cookie = new Cookie("JSESSIONID", req.getSession().getId());
-                            cookie.setHttpOnly(true);
-                            cookie.setSecure(true);
-                            cookie.setPath("/");
-                            cookie.setMaxAge(604800); // Время жизни куки: 1 неделя
-                            cookie.setAttribute("SameSite", "None"); // Установка SameSite=None
-                            res.addCookie(cookie);
+                            // // Установка куки с SameSite=None
+                            // Cookie cookie = new Cookie("JSESSIONID", req.getSession().getId());
+                            // cookie.setHttpOnly(true);
+                            // cookie.setSecure(true);
+                            // cookie.setPath("/");
+                            // cookie.setMaxAge(604800); // Время жизни куки: 1 неделя
+                            // cookie.setAttribute("SameSite", "None"); // Установка SameSite=None
+                            // res.addCookie(cookie);
                         })
                         .failureHandler((request, response, exception) -> {
                             log.error("Authentication failed: {}", exception.getMessage());

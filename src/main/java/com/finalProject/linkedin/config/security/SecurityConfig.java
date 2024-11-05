@@ -91,7 +91,7 @@ public class SecurityConfig {
                 .rememberMe(rememberMe -> rememberMe
                         .key("uniqueAndSecret") // ключ шифрования для cookies
                         .tokenValiditySeconds(7 * 24 * 60 * 60) // одна неделя
-                        .useSecureCookie(true)
+                        // .useSecureCookie(true)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")

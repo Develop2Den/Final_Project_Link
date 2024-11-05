@@ -30,6 +30,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 
 import java.io.IOException;
 import java.util.Optional;
+import static org.springframework.http.HttpStatus.OK;
 
 @Log4j2
 @Configuration
@@ -75,7 +76,6 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .defaultSuccessUrl("/profiles", true)
                         .successHandler((req, res, auth) -> {
-
                              if (auth != null) {
                                  res.sendRedirect("/profiles");
                              } else {
@@ -89,14 +89,14 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .rememberMe(rememberMe -> rememberMe
-                        .key("uniqueAndSecret") // ключ шифрования для cookies
+                        .key("uniqueAndSecret")
                         .tokenValiditySeconds(7 * 24 * 60 * 60) // одна неделя
                         .useSecureCookie(true)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessHandler(customLogoutSuccessHandler())
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies("JSESSIONID", "remember-me")
                         .invalidateHttpSession(true)
                         .permitAll());
         return http.build();
@@ -118,7 +118,7 @@ public class SecurityConfig {
     @Bean
     public LogoutSuccessHandler customLogoutSuccessHandler() {
         return (HttpServletRequest req, HttpServletResponse res, Authentication authentication) -> {
-            res.setStatus(HttpServletResponse.SC_OK);
+            res.setStatus(OK.value());
             res.getWriter().flush();
         };
     }

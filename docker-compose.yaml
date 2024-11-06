@@ -1,46 +1,46 @@
-version: '3.8'
-
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/lnkd
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=lt12345
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
-    ports:
-      - "8989:9000"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    restart: always
-
-  db:
-    image: 'postgres:16.2'
-    container_name: linkedin-test
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=lt12345
-      - POSTGRES_DB=lnkd
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    restart: always
-
-volumes:
-  postgres_data:
+#version: '3.8'
+#
+#services:
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/lnkd
+#      - SPRING_DATASOURCE_USERNAME=postgres
+#      - SPRING_DATASOURCE_PASSWORD=lt12345
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#      - SPRING_PROFILES_ACTIVE=prod
+#      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+#    ports:
+#      - "8989:9000"
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:9000/actuator/health"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#    restart: always
+#
+#  db:
+#    image: 'postgres:16.2'
+#    container_name: linkedin-test
+#    environment:
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=lt12345
+#      - POSTGRES_DB=lnkd
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U postgres"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#    restart: always
+#
+#volumes:
+#  postgres_data:

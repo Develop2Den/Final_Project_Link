@@ -11,8 +11,12 @@ import org.springframework.data.domain.Page;
  */
 public interface ProfileService {
     CreateProfileResp createProfile(CreateProfileReq createProfileReq);
+
     CreateProfileResp getProfileById(Long profileId);
+
     Page<CreateProfileResp> getAllProfiles(int page, int size);
+
     CreateProfileResp updateProfile(Long profileId, CreateProfileReq createProfileReq);
+
     void deleteProfile(Long profileId);
 }

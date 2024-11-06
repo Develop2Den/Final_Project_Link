@@ -9,11 +9,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-/**
- * description
- *
- * @author Alexander Isai on 06.10.2024.
- */
 @Entity
 @Table(name = "messages")
 @Data

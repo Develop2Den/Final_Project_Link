@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     List<Favorite> findByUserIdAndTargetIdAndTargetType(Long userId, Long targetId, TargetType targetType);
+
     List<Favorite> findByTargetIdAndTargetType(Long targetId, TargetType targetType);
 }

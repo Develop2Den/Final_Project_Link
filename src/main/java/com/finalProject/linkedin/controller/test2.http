@@ -1,0 +1,32 @@
+### Make subscribe
+POST http://localhost:9000/subscription/subscribed
+Content-Type: application/json
+
+{
+  "followerId": 6,
+  "followingId":5
+}
+
+### Make un subscribe
+POST http://localhost:9000/subscription/unsubscribed
+Content-Type: application/json
+
+{
+  "followerId": 3,
+  "followingId": 3
+}
+
+### GET PAGINATION LIST OF SUBSCRIBERS
+GET http://localhost:9000/subscription/getAllSubscribers/3?page=0&size=10
+
+### GET PAGINATION LIST OF Subscriptions
+
+GET http://localhost:9000/subscription/getAllSubscriptions/3?page=0&size=6
+
+### GET COUNT
+
+GET http://localhost:9000/subscription/getFollowers/3
+
+### GET COUNT
+
+GET http://localhost:9000/subscription/getFollowing/3

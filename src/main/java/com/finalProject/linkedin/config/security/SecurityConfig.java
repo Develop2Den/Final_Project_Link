@@ -30,63 +30,74 @@ import static org.springframework.http.HttpStatus.OK;
 @EnableWebSecurity
 public class SecurityConfig {
 
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .exceptionHandling(exception -> exception
+//                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+//                )
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers(
+//                                "/login",
+//                                "/auth",
+//                                "/",
+//                                "/confirm",
+//                                "/oauth2/**",
+//                                "/password-forgot",
+//                                "/password-reset",
+//                                "/swagger-ui/**",
+//                                "/v3/api-docs/**",
+//                                "/swagger-ui.html")
+//                        .permitAll()
+//                        .requestMatchers("/profiles/**").authenticated()
+//                        .anyRequest().authenticated()
+//                )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .loginPage("/login")
+//                        .defaultSuccessUrl("http://localhost:3000/customer", true)
+//                        .permitAll()
+//                )
+//                .formLogin(form -> form
+//                        .loginPage("/login")
+//                        .defaultSuccessUrl("/profiles", true)
+//                        .successHandler((req, res, auth) -> {
+//                            if (auth != null) {
+//                                res.sendRedirect("/profiles");
+//                            } else {
+//                                res.sendRedirect("/login");
+//                            }
+//                        })
+//                        .failureHandler((request, response, exception) -> {
+//                                    log.error("Authentication failed: {}", exception.getMessage());
+//                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
+//                                }
+//                        )
+//                        .permitAll()
+//                )
+//                .rememberMe(rememberMe -> rememberMe
+//                        .key("uniqueAndSecret") // ключ шифрования для cookies
+//                        .tokenValiditySeconds(7 * 24 * 60 * 60) // одна неделя
+//                )
+//                .logout(logout -> logout
+//                        .logoutUrl("/logout")
+//                        .logoutSuccessHandler(customLogoutSuccessHandler())
+//                        .deleteCookies("JSESSIONID")
+//                        .invalidateHttpSession(true)
+//                        .permitAll());
+//        return http.build();
+//    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(
-                                "/login",
-                                "/auth",
-                                "/",
-                                "/confirm",
-                                "/oauth2/**",
-                                "/password-forgot",
-                                "/password-reset",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui.html")
-                        .permitAll()
-                        .requestMatchers("/profiles/**").authenticated()
-                        .anyRequest().authenticated()
-                )
-                .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login")
-                        .defaultSuccessUrl("http://localhost:3000/customer", true)
-                        .permitAll()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/profiles", true)
-                        .successHandler((req, res, auth) -> {
-                            if (auth != null) {
-                                res.sendRedirect("/profiles");
-                            } else {
-                                res.sendRedirect("/login");
-                            }
-                        })
-                        .failureHandler((request, response, exception) -> {
-                                    log.error("Authentication failed: {}", exception.getMessage());
-                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
-                                }
-                        )
-                        .permitAll()
-                )
-                .rememberMe(rememberMe -> rememberMe
-                        .key("uniqueAndSecret") // ключ шифрования для cookies
-                        .tokenValiditySeconds(7 * 24 * 60 * 60) // одна неделя
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessHandler(customLogoutSuccessHandler())
-                        .deleteCookies("JSESSIONID")
-                        .invalidateHttpSession(true)
-                        .permitAll());
+                        .anyRequest().permitAll() // Разрешает доступ ко всем запросам
+                );
+
         return http.build();
     }
+
 
     @Bean
     public LogoutSuccessHandler customLogoutSuccessHandler() {

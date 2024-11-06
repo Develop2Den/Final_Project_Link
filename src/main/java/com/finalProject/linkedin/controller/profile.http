@@ -1,0 +1,27 @@
+###Create Profile
+
+POST http://localhost:9000/profiles
+Content-Type: application/json
+
+{
+  "userId": 11,
+  "name": "Alex1sdfxvc111111111111asdasdasdas",
+  "surname": "Rut43fsdfsd11111111111dasdadassa",
+  "birthdate": "1990-10-10T00:00:00",
+  "status": "Active",
+  "headerPhotoUrl": "https://example.com/photo.jpg",
+  "position": "Software Engineer",
+  "address": "123 Example St, City"
+}
+
+### Get number subscribtions
+
+GET http://localhost:9000/subscription/getFollowing/5
+
+### Get profile of yours subscribtion
+
+GET http://localhost:9000/subscription/getAllSubscriptions/5?page=0&size=4
+
+### Get profile of yours subscribers
+
+GET http://localhost:9000/subscription/getAllSubscribers/5?page=0&size=10

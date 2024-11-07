@@ -69,63 +69,36 @@ public class SecurityConfig {
                         .requestMatchers("/profiles/**").authenticated()
                         .anyRequest().authenticated()
                 )
-//                .sessionManagement(session -> session
-//                        .sessionFixation().newSession()
-//                        .maximumSessions(1)
-//                        .maxSessionsPreventsLogin(false)
-//                )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .successHandler(this::oauth2SuccessHandler)
                         .permitAll()
                 )
-//                .formLogin(form -> form
-//                        .loginPage("/login")
-////                        .defaultSuccessUrl("/profiles", true)
-//                        .successHandler((req, res, auth) -> {
-//                          res.setStatus(HttpServletResponse.SC_OK);
-//                          res.setContentType("application/json");
-//                          res.setCharacterEncoding("UTF-8");
-//                          res.getWriter().write("{\"message\": \"Authentication successful\", \"redirectUrl\": \"/profiles\"}");
-//                          res.getWriter().flush();
-//                            if (auth != null) {
-//                                res.sendRedirect("/profiles");
-//                            } else {
-//                                res.sendRedirect("/login");
-//                            }
-//                        })
-//                        .failureHandler((request, response, exception) -> {
-//                                    log.error("Authentication failed: {}", exception.getMessage());
-//                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
-//                                }
-//                        )
-//                        .permitAll()
-//                )
-                 .formLogin(form -> form
-                         .loginPage("/login")
-                         .defaultSuccessUrl("/profiles", true)
-                         .successHandler((req, res, auth) -> {
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/profiles", true)
+                        .successHandler((req, res, auth) -> {
                              if (auth != null) {
                                  res.sendRedirect("/profiles");
                              } else {
                                  res.sendRedirect("/login");
                              }
-                         })
-                         .failureHandler((request, response, exception) -> {
-                                     log.error("Authentication failed: {}", exception.getMessage());
-                                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
-                                 }
-                         )
-                         .permitAll()
-                 )
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            log.error("Authentication failed: {}", exception.getMessage());
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
+                        })
+                        .permitAll()
+                )
                 .rememberMe(rememberMe -> rememberMe
-                        .key("uniqueAndSecret") // ключ шифрования для cookies
+                        .key("uniqueAndSecret")
                         .tokenValiditySeconds(7 * 24 * 60 * 60) // одна неделя
+                        .useSecureCookie(true)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessHandler(customLogoutSuccessHandler())
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies("JSESSIONID", "remember-me")
                         .invalidateHttpSession(true)
                         .permitAll());
         return http.build();
@@ -140,7 +113,7 @@ public class SecurityConfig {
         if (user.isEmpty()) {
             response.sendRedirect(FRONT_URL + "/registrations");
         } else {
-            response.sendRedirect(FRONT_URL + "/customer");
+            response.sendRedirect(FRONT_URL + "/home");
         }
     }
 
@@ -155,11 +128,10 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(UserServiceImpl userServiceImpl) {
         return email -> {
-
             Boolean isVerified = userServiceImpl.isUserVerified(email);
             if (isVerified == null || !isVerified) {
-                log.warn("Юзер не подтвержден: {}", email);
-                throw new BadCredentialsException("Почта не подтверждена!.");
+                log.warn("User not verified: {}", email);
+                throw new BadCredentialsException("Email not verified!");
             }
 
             User user = userServiceImpl.findUserByEmail(email)

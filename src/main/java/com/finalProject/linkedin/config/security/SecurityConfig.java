@@ -19,7 +19,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -68,9 +67,6 @@ public class SecurityConfig {
                         .requestMatchers("/profiles/**").authenticated()
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .successHandler(this::oauth2SuccessHandler)
@@ -79,13 +75,6 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/profiles", true)
-                        .successHandler((req, res, auth) -> {
-                             if (auth != null) {
-                                 res.sendRedirect("/profiles");
-                             } else {
-                                 res.sendRedirect("/login");
-                             }
-                        })
                         .failureHandler((request, response, exception) -> {
                             log.error("Authentication failed: {}", exception.getMessage());
                             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");

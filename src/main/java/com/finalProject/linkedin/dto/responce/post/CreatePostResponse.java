@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotNull;
 
 public record CreatePostResponse(
         @NotNull(message = "Should be not empty")
-        Long Author_Id,
+        Long authorId,
         @NotNull(message = "Should be not empty")
-        String Title,
+        String title,
         @NotBlank(message = "Should be not empty")
         String Content
 ) {

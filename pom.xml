@@ -195,7 +195,7 @@
         <executions>
           <execution>
             <configuration>
-              <configLocation>app/checkstyle_config.xml</configLocation>
+              <configLocation>checkstyle_config.xml</configLocation>
               <consoleOutput>true</consoleOutput>
               <failsOnError>true</failsOnError>
               <violationSeverity>warning</violationSeverity>

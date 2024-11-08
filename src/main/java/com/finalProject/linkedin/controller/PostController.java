@@ -26,12 +26,11 @@ public class PostController {
     @Operation(summary = "Create new Post", description = "Creates a new Post")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<CreatePostResponse> createPost(@RequestBody @Valid CreatePostReq createPostReq) {
-        System.out.println(createPostReq);
         return ResponseEntity.status(HttpStatus.CREATED).body(postServiceImp.creatPost(createPostReq));
     }
 
     @DeleteMapping(value = "/{postId}")
-    @Operation(summary = "Delete Post", description = "Mark profile as logically deleted by setting 'deletedAt'")
+    @Operation(summary = "Delete By PostId", description = "Mark profile as logically deleted by setting 'deletedAt'")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
         postServiceImp.deletePost(postId);
@@ -53,5 +52,16 @@ public class PostController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size){
         return ResponseEntity.ok(postServiceImp.getAllPostsForUser(userId,page,size));
+    }
+
+
+    @GetMapping(value = "/{userId}/recommends")
+    @Operation(summary = "Get post for User", description = "Get posts with pagination for User by his id")
+    @ApiResponse(responseCode = "200")
+    public ResponseEntity<Page<CreatePostResponse>> getPostsForRecommends (
+            @PathVariable Long userId ,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(postServiceImp.getPostsForRecommends(userId,page,size));
     }
 }

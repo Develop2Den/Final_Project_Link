@@ -4,7 +4,7 @@ import com.finalProject.linkedin.dto.request.subscription.CreateSubscriptionReq;
 import com.finalProject.linkedin.dto.responce.subscription.ShortProfileResponse;
 import com.finalProject.linkedin.entity.Profile;
 import com.finalProject.linkedin.entity.Subscription;
-import com.finalProject.linkedin.exception.InvalidSubscriptionException;
+import com.finalProject.linkedin.exception.InvalidRequestException;
 import com.finalProject.linkedin.exception.NotFoundException;
 import com.finalProject.linkedin.mapper.SubscriptionsMapper;
 import com.finalProject.linkedin.repository.SubscriptionRepository;
@@ -29,7 +29,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         Subscription subscription = subscriptionsMapper.toSubscription(createSubscriptionReq);
 
         if (subscription.getFollowerId().equals(subscription.getFollowingId())) {
-            throw new InvalidSubscriptionException("User cannot subscribe to themselves.");
+            throw new InvalidRequestException("User cannot subscribe to themselves.");
         }
 
         Optional<Subscription> existingSubscription = subscriptionRepository

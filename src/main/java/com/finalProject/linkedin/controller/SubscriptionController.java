@@ -40,7 +40,6 @@ public class SubscriptionController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Successful");
     }
 
-    //NEED DTO OR SERVICE METHOD WHERE I CAN GET NAME SURNAME PHOTO OF USER
     @GetMapping(value = "getAllSubscribers/{whoGetSubscribedId}")
     @Operation(summary = "Get profiles of subscribers ",
                description = "Get name , surname , photo of you subscribers with pagination by userId")
@@ -53,7 +52,6 @@ public class SubscriptionController {
        return ResponseEntity.ok(subscriptionServiceImpl.getAllSubscribers(whoGetSubscribedId, page, size));
     }
 
-    //NEED DTO OR SERVICE METHOD WHERE I CAN GET NAME SURNAME PHOTO OF USER
     @GetMapping(value = "getAllSubscriptions/{followerId}")
     @Operation(summary = "Get your Subscriptions profiles",
             description = "Get name , surname , photo of you subscriptions with pagination by userId")

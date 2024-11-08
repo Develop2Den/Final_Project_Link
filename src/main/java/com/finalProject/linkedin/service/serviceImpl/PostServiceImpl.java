@@ -24,8 +24,7 @@ public class PostServiceImpl implements PostService {
     public CreatePostResponse creatPost(CreatePostReq createPostReq) {
         Post post = postMapper.toPost(createPostReq);
         post = postRepository.save(post);
-        CreatePostResponse createPostResponse = postMapper.toCreatePostResp(post) ;
-        return createPostResponse;
+        return postMapper.toCreatePostResp(post);
     }
 
     public CreatePostResponse getPostById(Long postId) {
@@ -39,7 +38,6 @@ public class PostServiceImpl implements PostService {
     public Page<CreatePostResponse> getAllPostsForUser(Long userId ,int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         boolean checkedID = postRepository.existsByAuthorId(userId);
-        System.out.println(checkedID);
         if (checkedID) {
             Page<Post> profilePage = postRepository.findByAuthorIdAndDeletedAtIsNull(userId, pageable);
             return profilePage.map(postMapper::toCreatePostResp);
@@ -57,14 +55,16 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
     }
 
-    public Page<CreatePostResponse> getPostsForRecommends(Long User_id) {
-        Pageable pageable = PageRequest.of(0, 10);
-        boolean checkedID = postRepository.existsByAuthorId(User_id);
+    public Page<CreatePostResponse> getPostsForRecommends(Long userId ,int page, int size ) {
+        Pageable pageable = PageRequest.of(page, size);
+        boolean checkedID = postRepository.existsByAuthorId(userId);
         if (checkedID) {
-            return null;
+            return (postRepository
+                    .findRecommendedPostsBySubscriptions(userId,pageable )
+                    .map(postMapper::toCreatePostResp));
         }
         else {
-            throw new NotFoundException("Profile not found with id " + User_id);
+            throw new NotFoundException("Profile not found with id " + userId);
         }
     }
 }

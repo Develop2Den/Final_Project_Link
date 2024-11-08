@@ -14,5 +14,5 @@ public interface PostService {
 
     Page<CreatePostResponse> getAllPostsForUser(Long useId ,int page, int size);
 
-    Page<CreatePostResponse> getPostsForRecommends(Long User_id);
+    Page<CreatePostResponse> getPostsForRecommends(Long User_id ,int page, int size );
 }

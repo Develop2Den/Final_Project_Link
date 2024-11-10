@@ -1,6 +1,5 @@
 package com.finalProject.linkedin.repository;
 
-import com.finalProject.linkedin.dto.responce.subscription.ShortProfileResponse;
 import com.finalProject.linkedin.entity.Profile;
 import com.finalProject.linkedin.entity.Subscription;
 import org.springframework.data.domain.Page;

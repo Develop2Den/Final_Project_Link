@@ -16,5 +16,6 @@ public interface SubscriptionService {
     Page<ShortProfileResponse> getAllSubscriptions (Long followerId,int page, int size);
 
     Long getFollowersCount (Long userId);
+
     Long getFollowingCount (Long userId);
 }

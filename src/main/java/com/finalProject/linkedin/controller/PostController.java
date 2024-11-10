@@ -50,7 +50,7 @@ public class PostController {
     public ResponseEntity<Page<CreatePostResponse>> getAllPostsForUser (
             @PathVariable Long userId ,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size){
+            @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(postServiceImp.getAllPostsForUser(userId,page,size));
     }
 
@@ -61,7 +61,7 @@ public class PostController {
     public ResponseEntity<Page<CreatePostResponse>> getPostsForRecommends (
             @PathVariable Long userId ,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size){
+            @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(postServiceImp.getPostsForRecommends(userId,page,size));
     }
 }

@@ -78,7 +78,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public Long getFollowersCount(Long userId) {
 
-       return subscriptionRepository.countByFollowingId(userId)
+        return subscriptionRepository.countByFollowingId(userId)
                .orElseThrow(() -> new NotFoundException("No subscription found , error" + userId));
     }
 

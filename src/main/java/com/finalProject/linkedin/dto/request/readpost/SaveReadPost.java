@@ -1,4 +1,4 @@
-package com.finalProject.linkedin.dto.request.ReadPost;
+package com.finalProject.linkedin.dto.request.readpost;
 
 public record SaveReadPost (
         Long postId ,

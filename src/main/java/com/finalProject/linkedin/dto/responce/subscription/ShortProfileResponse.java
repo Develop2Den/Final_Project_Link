@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ShortProfileResponse{
+public class ShortProfileResponse {
     Integer userId;
     String name ;
     String surname ;

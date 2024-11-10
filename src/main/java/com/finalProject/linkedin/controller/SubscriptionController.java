@@ -26,7 +26,7 @@ public class SubscriptionController {
     @PostMapping(value = "subscribed")
     @Operation(description = "Subscribed on someone")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<?> subscribed (@RequestBody @Valid CreateSubscriptionReq createSubscriptionReq){
+    public ResponseEntity<?> subscribed (@RequestBody @Valid CreateSubscriptionReq createSubscriptionReq) {
         System.out.println(createSubscriptionReq);
         subscriptionServiceImpl.subscribed(createSubscriptionReq);
         return ResponseEntity.status(HttpStatus.CREATED).body("Successful");
@@ -35,7 +35,7 @@ public class SubscriptionController {
     @PostMapping(value = "unsubscribed")
     @Operation(description = "Unsubscribed on someone")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<?> unsubscribed (@RequestBody @Valid CreateSubscriptionReq createSubscriptionReq){
+    public ResponseEntity<?> unsubscribed (@RequestBody @Valid CreateSubscriptionReq createSubscriptionReq) {
         subscriptionServiceImpl.unsubscribed(createSubscriptionReq);
         return ResponseEntity.status(HttpStatus.CREATED).body("Successful");
     }
@@ -47,9 +47,9 @@ public class SubscriptionController {
     public ResponseEntity<Page<ShortProfileResponse>> getAllSubscribers (
             @PathVariable Long whoGetSubscribedId,
             @RequestParam int page,
-            @RequestParam int size){
+            @RequestParam int size) {
 
-       return ResponseEntity.ok(subscriptionServiceImpl.getAllSubscribers(whoGetSubscribedId, page, size));
+        return ResponseEntity.ok(subscriptionServiceImpl.getAllSubscribers(whoGetSubscribedId, page, size));
     }
 
     @GetMapping(value = "getAllSubscriptions/{followerId}")
@@ -59,15 +59,15 @@ public class SubscriptionController {
     public ResponseEntity<Page<ShortProfileResponse>> getAllSubscriptions (
             @PathVariable Long followerId,
             @RequestParam int page,
-            @RequestParam int size){
+            @RequestParam int size) {
 
-       return ResponseEntity.ok(subscriptionServiceImpl.getAllSubscriptions(followerId,page,size));
+        return ResponseEntity.ok(subscriptionServiceImpl.getAllSubscriptions(followerId,page,size));
     }
 
     @GetMapping(value = "getFollowers/{userId}")
     @Operation(description = "Get the number of subscribers")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<Long> getFollowersCount (@PathVariable Long userId){
+    public ResponseEntity<Long> getFollowersCount (@PathVariable Long userId) {
         return ResponseEntity.ok(subscriptionServiceImpl.getFollowersCount(userId));
     }
 

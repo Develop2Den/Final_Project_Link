@@ -45,4 +45,36 @@ public class NotificationController {
 
     }
 
+    @GetMapping("/list/{id}")
+    public List<NotificationRes> getAllNotification(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @PathVariable long id
+    ) {
+        log.info("Pageable request chats by id: ID = {},  page={}, size={}", id, page, size);
+        Pageable pageable = PageRequest.of(page, size);
+        return notificationService.findAll(pageable);
+    }
+
+    @GetMapping("/count/{id}")
+    public long getAllNotificationCount(
+            @PathVariable long id
+    ) {
+        log.info(" request  count chats by id: ID = {}", id);
+        return notificationService.countByRecipientIdReadFalse(id);
+    }
+
+    @GetMapping("/unread/{id}")
+    public List<NotificationRes> getAllUnreadNotification(
+            @PathVariable long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        log.info("Pageable request notification by id: ID = {},  page={}, size={}", id, page, size);
+        Pageable pageable = PageRequest.of(page, size);
+        return notificationService.findByIdAndReadFalse(pageable,id);
+    }
+
+
+
 }

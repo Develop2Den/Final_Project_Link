@@ -8,11 +8,16 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface NotificationService {
-   NotificationRes create(NotificationReq notificationReq);
+    NotificationRes create(NotificationReq notificationReq);
 
     boolean deleteById(Long id);
 
     Notification getOne(long id);
 
     List<NotificationRes> findAll(Pageable pageable);
+
+    long countByRecipientIdReadFalse(Long recipientId);
+
+    List<NotificationRes> findByIdAndReadFalse(Pageable pageable, Long recipientId);
+
 }

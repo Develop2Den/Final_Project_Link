@@ -1,7 +1,7 @@
 package com.finalProject.linkedin.dto.responce.notification;
 
 
-import com.finalProject.linkedin.utils.enums.TargetType;
+import com.finalProject.linkedin.utils.enums.NotificationType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,7 +12,7 @@ public class NotificationRes {
     private Long notificationId;
     private Long recipientId;
     private String message;
-    private TargetType notificationType;
+    private NotificationType notificationType;
     private LocalDateTime createdAt;
     private Boolean read;
 

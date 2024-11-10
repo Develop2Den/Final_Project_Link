@@ -4,11 +4,11 @@ package com.finalProject.linkedin.service.serviceImpl;
 import com.finalProject.linkedin.dto.request.notification.NotificationReq;
 import com.finalProject.linkedin.dto.responce.notification.NotificationRes;
 import com.finalProject.linkedin.entity.Notification;
+import com.finalProject.linkedin.mapper.NotificationMapper;
 import com.finalProject.linkedin.repository.NotificationRepository;
 import com.finalProject.linkedin.service.serviceIR.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +20,15 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
-    private final ModelMapper modelMapper;
+    private final NotificationMapper notificationMapper;
     private final NotificationRepository notificationRepository;
 
     @Override
     public NotificationRes create(NotificationReq notificationReq) {
-        Notification notification = modelMapper.map(notificationReq, Notification.class);
+        Notification notification = notificationMapper.toNotification(notificationReq);
         if (getIdFromEntity(notification) == 0L) {
             Notification savedNotification = notificationRepository.save(notification);
-            return modelMapper.map(savedNotification, NotificationRes.class);
+            return notificationMapper.toNotificationRes(savedNotification);
         }
         throw new RuntimeException("Notification already exist");
     }
@@ -37,7 +37,7 @@ public class NotificationServiceImpl implements NotificationService {
     public boolean deleteById(Long id) {
         if (notificationRepository.existsById(id)) {
             Notification notification = getOne(id);
-           notification.setDeletedAt(LocalDateTime.now());
+            notification.setDeletedAt(LocalDateTime.now());
             notificationRepository.save(notification);
             return true;
         }
@@ -51,7 +51,18 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<NotificationRes> findAll(Pageable pageable) {
-        return notificationRepository.findAll(pageable).map(notification -> modelMapper.map(notification, NotificationRes.class)).toList();
+        return notificationRepository.findAll(pageable).map(notificationMapper::toNotificationRes).toList();
+    }
+
+    @Override
+    public long countByRecipientIdReadFalse(Long id) {
+        return notificationRepository.countByRecipientIdAndReadFalse(id);
+    }
+
+    @Override
+    public List<NotificationRes> findByIdAndReadFalse(Pageable pageable, Long recipientId) {
+        return notificationRepository.findByRecipientIdAndReadFalseOrderByCreatedAtDesc(pageable, recipientId)
+                .map(notificationMapper::toNotificationRes).toList();
     }
 
 

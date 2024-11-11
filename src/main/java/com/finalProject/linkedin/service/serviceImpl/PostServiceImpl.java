@@ -23,29 +23,28 @@ public class PostServiceImpl implements PostService {
 
     public CreatePostResponse creatPost(CreatePostReq createPostReq) {
         Post post = postMapper.toPost(createPostReq);
-
         post = postRepository.save(post);
-
         return postMapper.toCreatePostResp(post);
     }
 
     public CreatePostResponse getPostById(Long postId) {
         Post post = postRepository.findByPostId(postId)
-                .orElseThrow(() -> new NotFoundException("Profile not found with id " + postId));
+                .filter(x -> x.getDeletedAt() == null)
+                .orElseThrow(() -> new NotFoundException("Post not found with id " + postId));
 
         return postMapper.toCreatePostResp(post);
     }
 
-    public Page<CreatePostResponse> getAllPosts(int page, int size) {
+    public Page<CreatePostResponse> getAllPostsForUser(Long userId ,int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Post> profilePage = postRepository.findAll(pageable);
-        return profilePage.map(postMapper::toCreatePostResp);
-    }
-
-    public Page<CreatePostResponse> getAllPostsForUser(Long useId ,int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Post> profilePage = postRepository.findByAuthorId(useId , pageable);
-        return profilePage.map(postMapper::toCreatePostResp);
+        boolean checkedID = postRepository.existsByAuthorId(userId);
+        if (checkedID) {
+            Page<Post> profilePage = postRepository.findByAuthorIdAndDeletedAtIsNull(userId, pageable);
+            return profilePage.map(postMapper::toCreatePostResp);
+        }
+        else {
+            throw new NotFoundException("Profile not found with id " + userId);
+        }
     }
 
     public void deletePost(Long postId) {
@@ -55,5 +54,17 @@ public class PostServiceImpl implements PostService {
         post.setDeletedAt(LocalDateTime.now());
         postRepository.save(post);
     }
-    //Page<CreatePostResponse> getPostsForRecommends(Long User_id);
+
+    public Page<CreatePostResponse> getPostsForRecommends(Long userId ,int page, int size ) {
+        Pageable pageable = PageRequest.of(page, size);
+        boolean checkedID = postRepository.existsByAuthorId(userId);
+        if (checkedID) {
+            return (postRepository
+                    .findRecommendedPostsBySubscriptions(userId,pageable )
+                    .map(postMapper::toCreatePostResp));
+        }
+        else {
+            throw new NotFoundException("Profile not found with id " + userId);
+        }
+    }
 }

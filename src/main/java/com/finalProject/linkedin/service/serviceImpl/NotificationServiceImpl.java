@@ -4,6 +4,7 @@ package com.finalProject.linkedin.service.serviceImpl;
 import com.finalProject.linkedin.dto.request.notification.NotificationReq;
 import com.finalProject.linkedin.dto.responce.notification.NotificationRes;
 import com.finalProject.linkedin.entity.Notification;
+import com.finalProject.linkedin.exception.NotFoundException;
 import com.finalProject.linkedin.mapper.NotificationMapper;
 import com.finalProject.linkedin.repository.NotificationRepository;
 import com.finalProject.linkedin.service.serviceIR.NotificationService;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -25,28 +25,16 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public NotificationRes create(NotificationReq notificationReq) {
-        Notification notification = notificationMapper.toNotification(notificationReq);
-        if (getIdFromEntity(notification) == 0L) {
-            Notification savedNotification = notificationRepository.save(notification);
-            return notificationMapper.toNotificationRes(savedNotification);
-        }
-        throw new RuntimeException("Notification already exist");
+        return notificationMapper.toNotificationRes(notificationMapper.toNotification(notificationReq));
     }
 
     @Override
     public boolean deleteById(Long id) {
-        if (notificationRepository.existsById(id)) {
-            Notification notification = getOne(id);
-            notification.setDeletedAt(LocalDateTime.now());
-            notificationRepository.save(notification);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public Notification getOne(long id) {
-        return notificationRepository.findById(id).orElse(null);
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Notification not found with id " + id));
+        notification.setDeletedAt(LocalDateTime.now());
+        notificationRepository.save(notification);
+        return true;
     }
 
     @Override
@@ -55,8 +43,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public long countByRecipientIdReadFalse(Long id) {
-        return notificationRepository.countByRecipientIdAndReadFalse(id);
+    public long countByRecipientIdReadFalse(Long userId) {
+        return notificationRepository.countByRecipientIdAndReadFalse(userId);
     }
 
     @Override
@@ -65,10 +53,21 @@ public class NotificationServiceImpl implements NotificationService {
                 .map(notificationMapper::toNotificationRes).toList();
     }
 
-
-    public long getIdFromEntity(Notification notification) {
-        Optional<Notification> notification1 = notificationRepository.findAll().stream().filter(c -> c.equals(notification)).findFirst();
-        return notification1.map(Notification::getNotificationId).orElse(0L);
+    @Override
+    public NotificationRes getNotificationById(Long id) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Notification not found with id " + id));
+        return notificationMapper.toNotificationRes(notification);
     }
+
+    @Override
+    public boolean readTrue(Long id) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Notification not found with id " + id));
+        notification.setRead(true);
+        notificationRepository.save(notification);
+        return true;
+    }
+
 
 }

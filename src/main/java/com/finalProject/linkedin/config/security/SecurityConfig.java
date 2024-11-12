@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -77,13 +78,6 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/profiles", true)
-                        .successHandler((req, res, auth) -> {
-                             if (auth != null) {
-                                 res.sendRedirect("/profiles");
-                             } else {
-                                 res.sendRedirect("/login");
-                             }
-                        })
                         .failureHandler((request, response, exception) -> {
                             log.error("Authentication failed: {}", exception.getMessage());
                             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
@@ -98,9 +92,10 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessHandler(customLogoutSuccessHandler())
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies( "JSESSIONID", "remember-me")
                         .invalidateHttpSession(true)
                         .permitAll());
+
         return http.build();
     }
 
@@ -136,7 +131,6 @@ public class SecurityConfig {
 
             User user = userServiceImpl.findUserByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
 
             log.warn("Имейл: {}", email);
             log.warn("Зашифрованный пароль из базы данных: {}", user.getPassword());

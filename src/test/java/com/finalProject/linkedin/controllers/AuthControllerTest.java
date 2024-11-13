@@ -84,25 +84,6 @@ class AuthControllerTest {
         assertEquals("Акаунт успішно підтверджено! Можете закрити сторінку!", response);
     }
 
-//    @Test
-//    void processForgotPasswordShouldReturnOkWhenUserFound() {
-//
-//        Dotenv dotenv = Dotenv.load();
-//        String frontUrl = dotenv.get("FRONT_URL");
-//        String email = "test@example.com";
-//        User user = new User();
-//        user.setEmail(email);
-//
-//        when(userServiceImpl.findUserByEmail(email)).thenReturn(Optional.of(user));
-//        when(confirmationTokenServiceImpl.createPasswordResetTokenForUser(user)).thenReturn("resetToken");
-//
-//        ResponseEntity<String> response = authController.processForgotPassword(email);
-//
-//        verify(authEmailServiceImpl).sendResetEmail(email, frontUrl + "/password-reset?token=resetToken");
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals("Лист для скидання пароля надіслано", response.getBody());
-//    }
-
     @Test
     void resetPasswordShouldReturnOkWhenTokenIsValid() {
 

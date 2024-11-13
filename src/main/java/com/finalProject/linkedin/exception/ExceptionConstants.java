@@ -13,4 +13,5 @@ public class ExceptionConstants {
     public static String ANSWERS_LIMIT_REACHED = "Answers limit reached";
     public static String ANSWERS_INSUFFICIENT_QUANTITY = "Insufficient answers quantity";
     public static String ANSWERS_CORRECT_REQUIRED = "Correct answer is required";
+    public static String INVALID_REQUEST = "Invalid request";
 }

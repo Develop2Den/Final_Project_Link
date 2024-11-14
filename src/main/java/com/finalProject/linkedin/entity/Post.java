@@ -28,7 +28,7 @@ public class Post {
     private Long authorId;
     @Column(name = "title")
     private String title;
-    @Column(name = "photo_Url")
+    @Column(name = "photo_url")
     private String photoUrl;
     @Column(name = "content")
     private String content;

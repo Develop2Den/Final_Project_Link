@@ -28,7 +28,7 @@ public class PostServiceImpl implements PostService {
         if (post.getPhotoUrl() == null || post.getPhotoUrl().isEmpty()) {
             post.setPhotoUrl("https://img.freepik.com/free-photo/abstract-surface-textures-white-concrete-stone-wall_74190-8189.jpg");
         }
-        if(!userRepository.existsById(post.getAuthorId())) {
+        if (!userRepository.existsById(post.getAuthorId())) {
             throw new NotFoundException("Not found user with id : " + post.getAuthorId());
         }
         post = postRepository.save(post);

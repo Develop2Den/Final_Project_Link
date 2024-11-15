@@ -63,7 +63,7 @@ class AuthControllerTest {
         verify(userServiceImpl).save(any(User.class));
         verify(authEmailServiceImpl).sendConfirmationEmail(any(), any());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Користувач зареєстрований. Перевірте свою електронну пошту для підтвердження.", response.getBody());
+        assertEquals("User registered. Check your email for confirmation.", response.getBody());
     }
 
     @Test
@@ -81,7 +81,7 @@ class AuthControllerTest {
         String response = authController.confirmAccount(token);
 
         verify(confirmationTokenServiceImpl).setConfirmedAt(token, TokenType.REGISTRATION);
-        assertEquals("Акаунт успішно підтверджено! Можете закрити сторінку!", response);
+        assertEquals("Account confirmed successfully! You may close this page.", response);
     }
 
     @Test
@@ -105,7 +105,7 @@ class AuthControllerTest {
         verify(userServiceImpl).save(user);
         verify(confirmationTokenServiceImpl).findByTokenAndTokenType(token, TokenType.PASSWORD_RESET);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Пароль успішно скинуто", response.getBody());
+        assertEquals("Password reset successfully", response.getBody());
     }
 
 }

@@ -132,8 +132,8 @@ public class SecurityConfig {
             User user = userServiceImpl.findUserByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            log.warn("Имейл: {}", email);
-            log.warn("Зашифрованный пароль из базы данных: {}", user.getPassword());
+            log.warn("Email: {}", email);
+            log.warn("Encrypted password from database: {}", user.getPassword());
 
             return org.springframework.security.core.userdetails.User.builder()
                     .username(user.getEmail())

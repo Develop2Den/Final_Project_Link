@@ -31,7 +31,6 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 
 import java.io.IOException;
 import java.util.Optional;
-
 import static org.springframework.http.HttpStatus.OK;
 
 @Log4j2

@@ -17,4 +17,3 @@ public class CookieConfiguration {
         return CookieSameSiteSupplier.ofNone().whenHasName("JSESSIONID");
     }
 }
-

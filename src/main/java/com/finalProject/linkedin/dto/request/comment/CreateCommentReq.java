@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class CreateCommentReq {
-    private Long commentId;
+
     @NotNull(message = "post id field must be filled ")
     private Long postId;
     @NotNull(message = "author id field must be filled")

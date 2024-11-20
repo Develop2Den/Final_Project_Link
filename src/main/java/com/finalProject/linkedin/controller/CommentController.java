@@ -35,13 +35,13 @@ public class CommentController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<CreateCommentRes> createChat(@Valid @RequestBody CreateCommentReq createCommentReq) {
+    public ResponseEntity<CreateCommentRes> createComment(@Valid @RequestBody CreateCommentReq createCommentReq) {
         log.info("Request create new  comment : {}", createCommentReq);
         return ResponseEntity.ok(commentService.create(createCommentReq));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteChat(@PathVariable long id) {
+    public ResponseEntity<Void> deleteComment(@PathVariable long id) {
         log.info("Request delete comments  id: ID = {}", id);
         if (commentService.deleteById(id)) return ResponseEntity.ok().build();
         else return ResponseEntity.notFound().build();

@@ -3,6 +3,8 @@ package com.finalProject.linkedin.controller;
 import com.finalProject.linkedin.dto.request.comment.CreateCommentReq;
 import com.finalProject.linkedin.dto.responce.comment.CreateCommentRes;
 import com.finalProject.linkedin.service.serviceIR.CommentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,9 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
 
+
+    @Operation(summary = "Get paginated comments by post id", description = "Get list of comments by post id with pagination")
+    @ApiResponse(responseCode = "200")
     @GetMapping("/list/{id}")
     public List<CreateCommentRes> getAllCommentsByPostId(
             @PathVariable long id,
@@ -33,13 +38,18 @@ public class CommentController {
         return commentService.findAll(id, pageable);
     }
 
-
+    @Operation(summary = "Create new comment", description = "Creates a new comment")
+    @ApiResponse(responseCode = "201")
     @PostMapping("/create")
     public ResponseEntity<CreateCommentRes> createComment(@Valid @RequestBody CreateCommentReq createCommentReq) {
         log.info("Request create new  comment : {}", createCommentReq);
         return ResponseEntity.ok(commentService.create(createCommentReq));
     }
 
+
+    @Operation(summary = "Mark comment as deleted",
+            description = "Mark comment as logically deleted by setting 'deletedAt'")
+    @ApiResponse(responseCode = "204")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable long id) {
         log.info("Request delete comments  id: ID = {}", id);
@@ -47,6 +57,8 @@ public class CommentController {
         else return ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Get number of comments for post by post id", description = "Get number of comments for post by post id")
+    @ApiResponse(responseCode = "200")
     @GetMapping("/count/{id}")
     public ResponseEntity<Long> getCommentCount(@PathVariable long id) {
         log.info("Request count comments by Post id: ID = {}", id);

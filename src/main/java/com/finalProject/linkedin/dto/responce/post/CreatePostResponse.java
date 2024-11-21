@@ -10,6 +10,7 @@ public record CreatePostResponse(
         Long authorId,
         @NotNull(message = "Should be not empty")
         String title,
+        String photoUrl,
         @NotBlank(message = "Should be not empty")
         String content
 ) {

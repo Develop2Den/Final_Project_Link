@@ -58,5 +58,11 @@ token - a9f815397eaf09418739108a689c5aa2b98cc9bb
 
 ```
 
+### Сваггер-адрес
+```
+http://localhost:9000/swagger-ui/index.html
+
+```
+
 
 

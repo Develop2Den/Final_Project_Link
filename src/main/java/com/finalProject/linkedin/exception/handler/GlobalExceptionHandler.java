@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResp> handleNotFoundException(NotFoundException ex) {
-        log.debug("Resource not found for request: {}", ex.getMessage());
+        log.debug("Route not found: {}", ex.getMessage());
         return new ResponseEntity<>(new ErrorResp(ExceptionConstants.NOT_FOUND), HttpStatus.NOT_FOUND);
     }
 

@@ -52,7 +52,7 @@ public class UserControllerTest {
                         .with(csrf())
                         .contentType("application/json")
                         .content(new ObjectMapper().writeValueAsString(createUserRequest)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.email").value("john.doe@example.com"));
     }

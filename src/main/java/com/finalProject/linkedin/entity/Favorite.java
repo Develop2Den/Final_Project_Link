@@ -10,11 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-/**
- * description
- *
- * @author Alexander Isai on 06.10.2024.
- */
 @Entity
 @Table(name = "favorites")
 @Data

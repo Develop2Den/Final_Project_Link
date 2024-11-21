@@ -8,6 +8,7 @@ import com.finalProject.linkedin.exception.InvalidRequestException;
 import com.finalProject.linkedin.exception.NotFoundException;
 import com.finalProject.linkedin.mapper.SubscriptionsMapper;
 import com.finalProject.linkedin.repository.SubscriptionRepository;
+import com.finalProject.linkedin.repository.UserRepository;
 import com.finalProject.linkedin.service.serviceIR.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,10 +24,18 @@ import java.util.Optional;
 public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final SubscriptionsMapper subscriptionsMapper;
+    private final UserRepository userRepository;
 
     @Override
     public void subscribed(CreateSubscriptionReq createSubscriptionReq) {
         Subscription subscription = subscriptionsMapper.toSubscription(createSubscriptionReq);
+
+        if (!userRepository.existsById(createSubscriptionReq.followerId()) ||
+            !userRepository.existsById(createSubscriptionReq.followingId() )
+        )
+        {
+            throw new NotFoundException("User not found");
+        }
 
         if (subscription.getFollowerId().equals(subscription.getFollowingId())) {
             throw new InvalidRequestException("User cannot subscribe to themselves.");
@@ -62,6 +71,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Page<ShortProfileResponse> getAllSubscribers(Long whoGetSubscribedId, int page, int size) {
+        userVerification(whoGetSubscribedId);
         Pageable pageable = PageRequest.of(page, size);
         Page<Profile> profileResponse = subscriptionRepository.findAllSubscribers(whoGetSubscribedId , pageable);
         return profileResponse.map(subscriptionsMapper::toShortProfile);
@@ -70,6 +80,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Page<ShortProfileResponse> getAllSubscriptions(Long followerId, int page, int size) {
+        userVerification(followerId);
         Pageable pageable = PageRequest.of(page, size);
         Page<Profile> subscriptionsResponse = subscriptionRepository.findAllSubscriptions(followerId , pageable);
         return subscriptionsResponse.map(subscriptionsMapper::toShortProfile);
@@ -77,15 +88,19 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Long getFollowersCount(Long userId) {
-
+        userVerification(userId);
         return subscriptionRepository.countByFollowingId(userId)
                .orElseThrow(() -> new NotFoundException("No subscription found , error" + userId));
     }
 
     @Override
     public Long getFollowingCount(Long userId) {
-
+        userVerification(userId);
         return subscriptionRepository.countByFollowerId(userId)
                 .orElseThrow(() -> new NotFoundException("No subscription found , error" + userId));
+    }
+
+    private void userVerification(Long userId) throws NotFoundException {
+        if (!userRepository.existsById(userId)) throw new NotFoundException("User not found" + userId);
     }
 }

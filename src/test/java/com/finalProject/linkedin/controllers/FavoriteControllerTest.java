@@ -50,7 +50,7 @@ class FavoriteControllerTest {
     void removeFavoriteShouldReturnNoContent() {
         Long userId = 1L;
         Long targetId = 2L;
-        TargetType targetType = TargetType.PROFILE_LIKE; // Убедитесь, что это правильный тип
+        TargetType targetType = TargetType.POST_LIKE; // Убедитесь, что это правильный тип
 
 
         ResponseEntity<Void> response = favoriteController.removeFavorite(userId, targetId, targetType);

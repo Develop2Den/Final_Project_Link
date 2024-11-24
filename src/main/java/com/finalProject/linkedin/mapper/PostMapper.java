@@ -1,6 +1,7 @@
 package com.finalProject.linkedin.mapper;
 
 import com.finalProject.linkedin.dto.request.post.CreatePostReq;
+
 import com.finalProject.linkedin.dto.responce.post.CreatePostResponse;
 import com.finalProject.linkedin.entity.Post;
 import org.mapstruct.Mapper;

@@ -5,10 +5,13 @@ import jakarta.validation.constraints.NotNull;
 
 public record CreatePostResponse(
         @NotNull(message = "Should be not empty")
+        Long postId,
+        @NotNull(message = "Should be not empty")
         Long authorId,
         @NotNull(message = "Should be not empty")
         String title,
+        String photoUrl,
         @NotBlank(message = "Should be not empty")
-        String Content
+        String content
 ) {
 }

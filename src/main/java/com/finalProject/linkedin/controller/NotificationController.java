@@ -49,16 +49,15 @@ public class NotificationController {
     public ResponseEntity<Void> deleteNotification(@PathVariable long id) {
         if (notificationService.deleteById(id)) return ResponseEntity.ok().build();
         else return ResponseEntity.notFound().build();
-
     }
 
     @Operation(summary = "Get paginated notifications by user id", description = "Get list of notifications with pagination by user id")
     @ApiResponse(responseCode = "200")
     @GetMapping("/list/{id}")
     public List<NotificationRes> getAllNotification(
+            @PathVariable long id,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @PathVariable long id
+            @RequestParam(defaultValue = "5") int size
     ) {
         log.info("Pageable request notifications by id: ID = {},  page={}, size={}", id, page, size);
         Pageable pageable = PageRequest.of(page, size);

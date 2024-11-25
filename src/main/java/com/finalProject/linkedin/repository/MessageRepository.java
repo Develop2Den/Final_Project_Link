@@ -37,5 +37,11 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "ORDER BY m.createdAt DESC")
     Page<Message> findLatestMessagesForEachPairByUserId(@Param("id") Long id, Pageable pageable);
 
+    @Query("SELECT COUNT(m) FROM Message m " +
+            "WHERE m.read = false AND " +
+            "(m.senderId = :userId2 AND m.recipientId = :userId1) " +
+            "AND m.deletedAt IS NULL")
+    long countUnreadMessagesBetweenUsers(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
+
 
 }

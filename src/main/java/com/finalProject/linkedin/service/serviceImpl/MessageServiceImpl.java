@@ -27,6 +27,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageResp create(MessageReq messageReq) {
+        userVerification(messageReq.getSenderId());
+        userVerification(messageReq.getRecipientId());
         return messageMapper.toMessageResp(messageRepository.save(messageMapper.toMessage(messageReq)));
     }
 
@@ -46,24 +48,33 @@ public class MessageServiceImpl implements MessageService {
     }
 
 
-
     @Override
     public List<MessageResp> getChatMessages(Long id1, Long id2, Pageable pageable) {
-        if (userRepository.findById(id1).isEmpty())
-            throw new NotFoundException("User not found with id " + id1);
-        if (userRepository.findById(id2).isEmpty())
-            throw new NotFoundException("User not found with id " + id2);
+        userVerification(id1);
+        userVerification(id2);
         return messageRepository.findMessagesBetweenUsers(id1, id2, pageable).stream().map(messageMapper::toMessageResp).toList();
     }
 
     @Override
-    public List<GetMessageWithProfileResp> findLatestMessagesForUser(Long id, Pageable pageable) {
-        if (userRepository.findById(id).isEmpty())
-            throw new NotFoundException("User not found with id " + id);
-        return messageRepository.findLatestMessagesForEachPairByUserId(id, pageable).stream()
-                .map(message -> messageMapper.toMessageWithUserResp(message, id))
+    public List<GetMessageWithProfileResp> findLatestMessagesForUser(Long userId, Pageable pageable) {
+        userVerification(userId);
+        return messageRepository.findLatestMessagesForEachPairByUserId(userId, pageable).stream()
+                .map(message -> {
+                    GetMessageWithProfileResp response = messageMapper.toMessageWithUserResp(message, userId);
+                    long unreadCount;
+                    if (message.getSenderId().equals(userId))
+                        unreadCount = messageRepository.countUnreadMessagesBetweenUsers(userId, message.getRecipientId());
+                    else
+                        unreadCount = messageRepository.countUnreadMessagesBetweenUsers(message.getRecipientId(), userId);
+                    response.setUnreadMessagesCount(unreadCount);
+                    return response;
+                })
                 .toList();
     }
 
+
+    private void userVerification(Long userId) throws NotFoundException {
+        if (!userRepository.existsById(userId)) throw new NotFoundException("User not found" + userId);
+    }
 
 }

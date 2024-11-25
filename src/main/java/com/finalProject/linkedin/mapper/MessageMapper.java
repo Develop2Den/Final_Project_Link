@@ -26,6 +26,7 @@ public interface MessageMapper {
     List<GetMessageWithProfileResp> toMessageWithUserRespList(List<Message> messages, @Context Long userId);
 
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "read", constant = "false")
     Message toMessage(MessageReq messageReq);
 
     MessageResp toMessageResp(Message Message);

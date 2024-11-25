@@ -15,4 +15,6 @@ public class GetMessageWithProfileResp {
     private String headerPhotoUrl;
     private LocalDateTime createdAt;
     private Boolean read;
+    private long unreadMessagesCount;
+
 }

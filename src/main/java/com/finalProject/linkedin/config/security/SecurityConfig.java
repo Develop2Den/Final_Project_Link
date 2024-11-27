@@ -76,7 +76,7 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/profiles", true)
+                        .defaultSuccessUrl("/user", true)
                         .failureHandler((request, response, exception) -> {
                             log.error("Authentication failed: {}", exception.getMessage());
                             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");

@@ -65,7 +65,7 @@ public class MessageServiceImpl implements MessageService {
                     if (message.getSenderId().equals(userId))
                         unreadCount = messageRepository.countUnreadMessagesBetweenUsers(userId, message.getRecipientId());
                     else
-                        unreadCount = messageRepository.countUnreadMessagesBetweenUsers(message.getRecipientId(), userId);
+                        unreadCount = messageRepository.countUnreadMessagesBetweenUsers(userId, message.getSenderId());
                     response.setUnreadMessagesCount(unreadCount);
                     return response;
                 })

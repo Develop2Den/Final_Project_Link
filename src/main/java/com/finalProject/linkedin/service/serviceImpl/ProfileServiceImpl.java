@@ -47,13 +47,6 @@ public class ProfileServiceImpl implements ProfileService {
                 .orElseThrow(() -> new NotFoundException("Profile not found with id " + profileId));
         return profileMapper.toCreateProfileResp(profile);
     }
-
-//    @Override
-//    public Page<CreateProfileResp> getAllProfiles(int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Profile> profilePage = profileRepository.findAll(pageable);
-//        return profilePage.map(profileMapper::toCreateProfileResp);
-//    }
     @Override
     public List<CreateProfileResp> getAllProfiles(Integer page, Integer limit, String email, String name, String surname) {
         Specification<Profile> spec = Specification

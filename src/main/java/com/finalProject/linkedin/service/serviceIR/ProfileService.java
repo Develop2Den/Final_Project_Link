@@ -4,6 +4,8 @@ import com.finalProject.linkedin.dto.request.profile.CreateProfileReq;
 import com.finalProject.linkedin.dto.responce.profile.CreateProfileResp;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 /**
  * description
  *
@@ -14,7 +16,7 @@ public interface ProfileService {
 
     CreateProfileResp getProfileById(Long profileId);
 
-    Page<CreateProfileResp> getAllProfiles(int page, int size);
+    List<CreateProfileResp> getAllProfiles(Integer page, Integer limit, String email, String name, String surname);
 
     CreateProfileResp updateProfile(Long profileId, CreateProfileReq createProfileReq);
 

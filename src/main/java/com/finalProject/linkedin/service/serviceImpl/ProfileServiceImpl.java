@@ -59,7 +59,6 @@ public class ProfileServiceImpl implements ProfileService {
                 .map(profileMapper::toCreateProfileResp)
                 .toList();
     }
-
     @Override
     public CreateProfileResp updateProfile(Long profileId, CreateProfileReq createProfileReq) {
         Profile existingProfile = profileRepository.findById(profileId)

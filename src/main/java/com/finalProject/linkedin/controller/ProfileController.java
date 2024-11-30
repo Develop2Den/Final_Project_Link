@@ -46,6 +46,14 @@ public class ProfileController {
         return ResponseEntity.ok(profileService.getProfileById(profileId));
     }
 
+    @GetMapping(value = "/user")
+    @Operation(summary = "Get profile by userID", description = "Get profile by its userID")
+    @ApiResponse(responseCode = "200")
+    public ResponseEntity<CreateProfileResp> getProfileByUserId(@RequestParam(value = "userId") Long userId) {
+            return ResponseEntity.ok(profileService.getProfileByUserId(userId));
+        }
+
+
     @GetMapping
     @Operation(summary = "Get paginated profiles", description = "Get list of profiles with pagination")
     @ApiResponse(responseCode = "200")

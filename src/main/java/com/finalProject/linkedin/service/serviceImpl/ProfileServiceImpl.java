@@ -43,8 +43,15 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public CreateProfileResp getProfileById(Long profileId) {
-        Profile profile = profileRepository.findByUserIdAndDeletedAtIsNull(profileId)
+        Profile profile = profileRepository.findByProfileIdAndDeletedAtIsNull(profileId)
                 .orElseThrow(() -> new NotFoundException("Profile not found with id " + profileId));
+        return profileMapper.toCreateProfileResp(profile);
+    }
+
+    @Override
+    public CreateProfileResp getProfileByUserId(Long userId) {
+        Profile profile = profileRepository.findByUserIdAndDeletedAtIsNull(userId)
+                .orElseThrow(() -> new NotFoundException("Profile not found with id " + userId));
         return profileMapper.toCreateProfileResp(profile);
     }
     @Override

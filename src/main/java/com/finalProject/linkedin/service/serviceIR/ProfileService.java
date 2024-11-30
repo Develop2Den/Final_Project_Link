@@ -21,4 +21,5 @@ public interface ProfileService {
     CreateProfileResp updateProfile(Long profileId, CreateProfileReq createProfileReq);
 
     void deleteProfile(Long profileId);
+    CreateProfileResp getProfileByUserId(Long userId);
 }

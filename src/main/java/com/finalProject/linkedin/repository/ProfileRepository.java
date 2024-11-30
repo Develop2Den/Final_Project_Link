@@ -16,6 +16,7 @@ import java.util.Optional;
 @Repository
 public interface ProfileRepository extends JpaRepository<Profile, Long>, JpaSpecificationExecutor<Profile> {
 
+    Optional<Profile> findByProfileIdAndDeletedAtIsNull(Long id);
     Optional<Profile> findByUserIdAndDeletedAtIsNull(Long id);
 
 

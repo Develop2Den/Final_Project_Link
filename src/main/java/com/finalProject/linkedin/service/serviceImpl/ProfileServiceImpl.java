@@ -7,13 +7,17 @@ import com.finalProject.linkedin.exception.NotFoundException;
 import com.finalProject.linkedin.mapper.ProfileMapper;
 import com.finalProject.linkedin.repository.ProfileRepository;
 import com.finalProject.linkedin.service.serviceIR.ProfileService;
+import com.finalProject.linkedin.service.specification.ProfileSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * description
@@ -39,18 +43,29 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public CreateProfileResp getProfileById(Long profileId) {
-        Profile profile = profileRepository.findById(profileId)
+        Profile profile = profileRepository.findByProfileIdAndDeletedAtIsNull(profileId)
                 .orElseThrow(() -> new NotFoundException("Profile not found with id " + profileId));
         return profileMapper.toCreateProfileResp(profile);
     }
 
     @Override
-    public Page<CreateProfileResp> getAllProfiles(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Profile> profilePage = profileRepository.findAll(pageable);
-        return profilePage.map(profileMapper::toCreateProfileResp);
+    public CreateProfileResp getProfileByUserId(Long userId) {
+        Profile profile = profileRepository.findByUserIdAndDeletedAtIsNull(userId)
+                .orElseThrow(() -> new NotFoundException("Profile not found with id " + userId));
+        return profileMapper.toCreateProfileResp(profile);
     }
+    @Override
+    public List<CreateProfileResp> getAllProfiles(Integer page, Integer limit, String email, String name, String surname) {
+        Specification<Profile> spec = Specification
+                .where(ProfileSpecification.isNotDeleted())
+                .and(Specification.where(ProfileSpecification.hasEmail(email))
+                        .or(ProfileSpecification.hasName(name))
+                        .or(ProfileSpecification.hasSurname(surname)));
 
+        return profileRepository.findAll(spec, PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "id"))).stream()
+                .map(profileMapper::toCreateProfileResp)
+                .toList();
+    }
     @Override
     public CreateProfileResp updateProfile(Long profileId, CreateProfileReq createProfileReq) {
         Profile existingProfile = profileRepository.findById(profileId)

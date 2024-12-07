@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class GetMessageWithProfileResp {
+    private Long chatId;
     private Long messageId;
     private Long senderId;
     private Long recipientId;

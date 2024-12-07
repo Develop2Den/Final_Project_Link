@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
@@ -17,7 +16,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "OR (m.senderId = :userId2 AND m.recipientId = :userId1)) " +
             "AND m.deletedAt IS NULL " +
             "ORDER BY m.createdAt DESC ")
-    List<Message> findMessagesBetweenUsers(
+    Page<Message> findMessagesBetweenUsers(
             @Param("userId1") Long userId1,
             @Param("userId2") Long userId2,
             Pageable pageable);

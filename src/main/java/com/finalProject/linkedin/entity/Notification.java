@@ -20,6 +20,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notification {
+    public Notification(LocalDateTime createdAt, String message, NotificationType notificationType, Long recipientId) {
+        this.createdAt = createdAt;
+        this.message = message;
+        this.notificationType = notificationType;
+        this.recipientId = recipientId;
+        this.read = false;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notification_id")

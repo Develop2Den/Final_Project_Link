@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
@@ -17,7 +16,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "OR (m.senderId = :userId2 AND m.recipientId = :userId1)) " +
             "AND m.deletedAt IS NULL " +
             "ORDER BY m.createdAt DESC ")
-    List<Message> findMessagesBetweenUsers(
+    Page<Message> findMessagesBetweenUsers(
             @Param("userId1") Long userId1,
             @Param("userId2") Long userId2,
             Pageable pageable);
@@ -37,5 +36,11 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "ORDER BY m.createdAt DESC")
     Page<Message> findLatestMessagesForEachPairByUserId(@Param("id") Long id, Pageable pageable);
 
+    @Query("SELECT COUNT(m) FROM Message m " +
+            "WHERE m.read = false AND " +
+            "(m.senderId = :userId2 AND m.recipientId = :userId1) " +
+            "AND m.deletedAt IS NULL")
+    long countUnreadMessagesBetweenUsers(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
 
+    Page<Message> findByChat_ChatIdOrderByCreatedAtDesc(Long chatId, Pageable pageable);
 }

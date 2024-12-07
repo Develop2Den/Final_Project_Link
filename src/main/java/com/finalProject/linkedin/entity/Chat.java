@@ -33,6 +33,7 @@ public class Chat {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -46,4 +47,9 @@ public class Chat {
     @JoinColumn(name = "recipient_id", insertable = false, updatable = false)
     private User recipient;
 
+    public Chat(Long senderId, Long recipientId, LocalDateTime createdAt) {
+        this.senderId = senderId;
+        this.recipientId = recipientId;
+        this.createdAt = createdAt;
+    }
 }

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class MessageResp {
-
+    private Long chatId;
     private Long messageId;
     private Long senderId;
     private Long recipientId;

@@ -20,5 +20,7 @@ public interface MessageService {
 
     Message createAndSendOrNotification(Message message);
 
+    Page<Message> getMessagesByChatId(Long id, Pageable pageable);
+
 
 }

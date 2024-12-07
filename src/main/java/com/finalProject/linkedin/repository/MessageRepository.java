@@ -42,5 +42,5 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "AND m.deletedAt IS NULL")
     long countUnreadMessagesBetweenUsers(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
 
-
+    Page<Message> findByChat_ChatIdOrderByCreatedAtDesc(Long chatId, Pageable pageable);
 }

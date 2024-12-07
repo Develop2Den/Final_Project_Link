@@ -87,4 +87,16 @@ public class MessageController {
         return messageService.findLatestMessagesForUser(id, pageable);
     }
 
+    @Operation(summary = "Get paginated messages between two  users by chat id", description = "Get list of messages with pagination between user by chat id  ")
+    @ApiResponse(responseCode = "200")
+    @GetMapping("/chat/{id}")
+    public List<MessageResp> getAllMessagesChatId(
+            @PathVariable long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return messageService.getMessagesByChatId(id, pageable).map(messageMapper::toMessageResp).toList();
+    }
+
+
 }

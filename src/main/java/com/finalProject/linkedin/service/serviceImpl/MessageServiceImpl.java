@@ -87,6 +87,10 @@ public class MessageServiceImpl implements MessageService {
         if (!userRepository.existsById(userId)) throw new NotFoundException("User not found" + userId);
     }
 
+    private void chatVerification(Long chatId) throws NotFoundException {
+        if (!chatRepository.existsById(chatId)) throw new NotFoundException("Chat not found" + chatId);
+    }
+
     @Override
     public Message createAndSendOrNotification(Message message) {
         userVerification(message.getSenderId());
@@ -139,6 +143,12 @@ public class MessageServiceImpl implements MessageService {
         ));
         message.setChatId(chat.getChatId());
         System.out.println("Message Service impl - create new chat" + message);
+    }
+
+    @Override
+    public Page<Message> getMessagesByChatId(Long id, Pageable pageable) {
+        chatVerification(id);
+        return messageRepository.findByChat_ChatIdOrderByCreatedAtDesc(id, pageable);
     }
 }
 

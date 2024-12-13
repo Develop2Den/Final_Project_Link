@@ -51,31 +51,6 @@ public class AuthController {
         this.APP_URL = APP_URL;
     }
 
-//    @PostMapping("/auth")
-//    @Operation(summary = "Register new user", description = "Registers a new user and sends confirmation email")
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "201", description = "User registered successfully"),
-//            @ApiResponse(responseCode = "400", description = "User already exists")
-//    })
-//    public ResponseEntity<String> register(@RequestBody @Valid CreateUserReq createUserRequest) {
-//        if (userServiceImpl.findUserByEmail(createUserRequest.getEmail()).isPresent()) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User exists");
-//        }
-//        log.info("Registering user with password: {}", createUserRequest.getPassword().getPassword());
-//
-//        User newUser = new User(
-//                createUserRequest.getEmail(),
-//                passwordEncoder.encode(createUserRequest.getPassword().getPassword())
-//        );
-//        userServiceImpl.save(newUser);
-//        log.info("User registered successfully with email: {}", createUserRequest.getEmail());
-//
-//        String token = confirmationTokenServiceImpl.createToken(newUser);
-//        String confirmationLink = APP_URL + "/confirm?token=" + token;
-//        authEmailServiceImpl.sendConfirmationEmail(newUser.getEmail(), confirmationLink);
-//        return ResponseEntity.status(HttpStatus.CREATED).body("User registered. Check your email for confirmation.");
-//    }
-
     @PostMapping("/auth")
     @Operation(summary = "Register new user", description = "Registers a new user and sends confirmation email")
     @ApiResponses({
@@ -84,40 +59,33 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "Incomplete registration")
     })
     public ResponseEntity<String> register(@RequestBody @Valid CreateUserReq createUserRequest) {
-        // Проверяем, существует ли пользователь с таким email
         Optional<User> existingUser = userServiceImpl.findUserByEmail(createUserRequest.getEmail());
 
         if (existingUser.isPresent()) {
             User user = existingUser.get();
 
-            // Если пользователь уже верифицирован
             if (user.getIsVerified()) {
                 return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body("User exists");
+                  .status(HttpStatus.BAD_REQUEST)
+                  .body("User exists");
             }
 
-            // Если пользователь еще не завершил регистрацию
             return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body("You haven't completed registration! Please check your email for confirmation.");
+                   .status(HttpStatus.CONFLICT)
+                   .body("You haven't completed registration! Please check your email for confirmation.");
         }
 
-        // Логирование пароля убрано, так как это небезопасно
         log.info("Registering user with email: {}", createUserRequest.getEmail());
 
-        // Создание нового пользователя
         User newUser = new User(
                 createUserRequest.getEmail(),
                 passwordEncoder.encode(createUserRequest.getPassword().getPassword())
         );
         userServiceImpl.save(newUser);
 
-        // Создание токена подтверждения
         String token = confirmationTokenServiceImpl.createToken(newUser);
         String confirmationLink = APP_URL + "/confirm?token=" + token;
 
-        // Отправка email с подтверждением
         authEmailServiceImpl.sendConfirmationEmail(newUser.getEmail(), confirmationLink);
 
         return ResponseEntity

@@ -28,7 +28,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
                 user,
                 TokenType.REGISTRATION,
                 LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(15)  // Токен действителен 15 минут
+                LocalDateTime.now().plusMinutes(10)  // Токен действителен 10 минут
         );
         confirmationTokenRepository.save(confirmationToken);
         return token;

@@ -45,7 +45,7 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
                 user,
                 TokenType.PASSWORD_RESET,
                 LocalDateTime.now(),
-                LocalDateTime.now().plusHours(24)
+                LocalDateTime.now().plusHours(1)
         );
         confirmationTokenRepository.save(resetToken);
         return token;

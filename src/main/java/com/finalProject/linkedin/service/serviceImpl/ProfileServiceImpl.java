@@ -7,14 +7,11 @@ import com.finalProject.linkedin.exception.NotFoundException;
 import com.finalProject.linkedin.mapper.ProfileMapper;
 import com.finalProject.linkedin.repository.ProfileRepository;
 import com.finalProject.linkedin.service.serviceIR.ProfileService;
-import com.finalProject.linkedin.service.specification.ProfileSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +22,7 @@ import java.util.List;
  * @author Alexander Isai on 10.10.2024.
  */
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
 
@@ -56,15 +54,15 @@ public class ProfileServiceImpl implements ProfileService {
     }
     @Override
     public List<CreateProfileResp> getAllProfiles(Integer page, Integer limit, String email, String name, String surname) {
-        Specification<Profile> spec = Specification
-                .where(ProfileSpecification.isNotDeleted())
-                .and(Specification.where(ProfileSpecification.hasEmail(email))
-                        .or(ProfileSpecification.hasName(name))
-                        .or(ProfileSpecification.hasSurname(surname)));
-
-        return profileRepository.findAll(spec, PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "id"))).stream()
-                .map(profileMapper::toCreateProfileResp)
-                .toList();
+        log.info("Fetching profiles with page={}, limit={}", page, limit);
+        try {
+            List<Profile> profiles = profileRepository.findAll(PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "profileId"))).getContent();
+            log.info("Fetched profiles: {}", profiles);
+            return profiles.stream().map(profileMapper::toCreateProfileResp).toList();
+        } catch (Exception e) {
+            log.error("Error fetching profiles", e);
+            throw e;
+        }
     }
     @Override
     public CreateProfileResp updateProfile(Long profileId, CreateProfileReq createProfileReq) {

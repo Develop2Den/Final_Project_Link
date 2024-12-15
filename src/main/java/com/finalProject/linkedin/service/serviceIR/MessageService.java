@@ -18,9 +18,8 @@ public interface MessageService {
 
     List<GetMessageWithProfileResp> findLatestMessagesForUser(Long id1, Pageable pageable);
 
-    Message createAndSendOrNotification(Message message);
+    Message createAndSendOrNotification(Message message, int path);
 
     Page<Message> getMessagesByChatId(Long id, Pageable pageable);
-
 
 }

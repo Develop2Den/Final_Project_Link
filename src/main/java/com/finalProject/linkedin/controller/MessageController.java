@@ -14,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +28,7 @@ import java.util.List;
 public class MessageController {
     private final MessageService messageService;
     private final MessageMapper messageMapper;
+
 
     @Operation(summary = "Get paginated messages", description = "Get list of messages with pagination")
     @ApiResponse(responseCode = "200")
@@ -42,14 +46,20 @@ public class MessageController {
     @ApiResponse(responseCode = "201")
     @PostMapping("/create")
     public ResponseEntity<MessageResp> createMessage(@Valid @RequestBody MessageReq messageReq) {
-        return ResponseEntity.ok(messageMapper.toMessageResp(messageService.createAndSendOrNotification(messageMapper.toMessage(messageReq))));
+        return ResponseEntity.ok(messageMapper.toMessageResp(messageService.createAndSendOrNotification(messageMapper.toMessage(messageReq),1)));
     }
 
     @Operation(summary = "Create new message with chat id", description = "Creates a new message with chat id")
     @ApiResponse(responseCode = "201")
     @PostMapping("/create/identity")
     public ResponseEntity<MessageResp> createMessage1(@Valid @RequestBody MessageChatIdReq messageChatIdReq) {
-        return ResponseEntity.ok(messageMapper.toMessageResp(messageService.createAndSendOrNotification(messageMapper.toMessage(messageChatIdReq))));
+        return ResponseEntity.ok(messageMapper.toMessageResp(messageService.createAndSendOrNotification(messageMapper.toMessage(messageChatIdReq),2)));
+    }
+
+    @MessageMapping("/chat/{chatId}/send")
+    @SendTo("/queue/messages/{chatId}")
+    public MessageResp sendMessage(@DestinationVariable String chatId, MessageChatIdReq messageChatIdReq) {
+       return messageMapper.toMessageResp(messageService.createAndSendOrNotification(messageMapper.toMessage(messageChatIdReq),3));
     }
 
     @Operation(summary = "Mark message as deleted",

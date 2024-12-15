@@ -18,7 +18,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -79,8 +78,14 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/user", true)
                         .failureHandler((request, response, exception) -> {
                             log.error("Authentication failed: {}", exception.getMessage());
-                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
-                        })
+
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+
+                            String errorMessage = exception.getMessage();
+                            response.getWriter().write("{\"error\": \"" + errorMessage + "\"}");
+                                })
                         .permitAll()
                 )
                 .rememberMe(rememberMe -> rememberMe
@@ -122,17 +127,15 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(UserServiceImpl userServiceImpl) {
         return email -> {
-            Boolean isVerified = userServiceImpl.isUserVerified(email);
-            if (isVerified == null || !isVerified) {
-                log.warn("User not verified: {}", email);
-                throw new BadCredentialsException("Email not verified!");
-            }
 
             User user = userServiceImpl.findUserByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                    .orElseThrow(() -> new BadCredentialsException("User not found"));
 
-            log.warn("Email: {}", email);
-            log.warn("Encrypted password from database: {}", user.getPassword());
+            Boolean isVerified = userServiceImpl.isUserVerified(email);
+            if (isVerified == null || !isVerified) {
+                log.info("User not verified: {}", email);
+                throw new BadCredentialsException("Email not verified!");
+            }
 
             return org.springframework.security.core.userdetails.User.builder()
                     .username(user.getEmail())

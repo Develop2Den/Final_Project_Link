@@ -76,11 +76,17 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/profiles", true)
+                        .defaultSuccessUrl("/user", true)
                         .failureHandler((request, response, exception) -> {
                             log.error("Authentication failed: {}", exception.getMessage());
-                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
-                        })
+
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+
+                            String errorMessage = exception.getMessage();
+                            response.getWriter().write("{\"error\": \"" + errorMessage + "\"}");
+                                })
                         .permitAll()
                 )
                 .rememberMe(rememberMe -> rememberMe
@@ -122,17 +128,15 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(UserServiceImpl userServiceImpl) {
         return email -> {
-            Boolean isVerified = userServiceImpl.isUserVerified(email);
-            if (isVerified == null || !isVerified) {
-                log.warn("User not verified: {}", email);
-                throw new BadCredentialsException("Email not verified!");
-            }
 
             User user = userServiceImpl.findUserByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                    .orElseThrow(() -> new BadCredentialsException("User not found"));
 
-            log.warn("Имейл: {}", email);
-            log.warn("Зашифрованный пароль из базы данных: {}", user.getPassword());
+            Boolean isVerified = userServiceImpl.isUserVerified(email);
+            if (isVerified == null || !isVerified) {
+                log.info("User not verified: {}", email);
+                throw new BadCredentialsException("Email not verified!");
+            }
 
             return org.springframework.security.core.userdetails.User.builder()
                     .username(user.getEmail())

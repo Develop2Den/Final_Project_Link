@@ -6,6 +6,9 @@ import com.finalProject.linkedin.service.serviceIR.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * description
@@ -41,13 +46,24 @@ public class ProfileController {
         return ResponseEntity.ok(profileService.getProfileById(profileId));
     }
 
+    @GetMapping(value = "/user")
+    @Operation(summary = "Get profile by userID", description = "Get profile by its userID")
+    @ApiResponse(responseCode = "200")
+    public ResponseEntity<CreateProfileResp> getProfileByUserId(@RequestParam(value = "userId") Long userId) {
+            return ResponseEntity.ok(profileService.getProfileByUserId(userId));
+        }
+
+
     @GetMapping
     @Operation(summary = "Get paginated profiles", description = "Get list of profiles with pagination")
     @ApiResponse(responseCode = "200")
-    public ResponseEntity<Page<CreateProfileResp>> getAllProfiles(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(profileService.getAllProfiles(page, size));
+    public ResponseEntity<List<CreateProfileResp>> getAllProfiles(
+            @RequestParam(defaultValue = "0") @Min(0) @Max(10_000) Integer page,
+            @RequestParam(defaultValue = "10") @Min(1) @Max(50) Integer limit,
+            @RequestParam(required = false) @Size(max = 100) String email,
+            @RequestParam(required = false) @Size(max = 100) String name,
+            @RequestParam(required = false) @Size(max = 100) String surname) {
+        return ResponseEntity.ok(profileService.getAllProfiles(page, limit, email, name, surname));
     }
 
     @PutMapping("/{profileId}")

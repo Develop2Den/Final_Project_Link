@@ -171,7 +171,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Page<Message> getMessagesByChatId(Long id, Pageable pageable) {
         chatVerification(id);
-        return messageRepository.findByChat_ChatIdOrderByCreatedAtDesc(id, pageable);
+        return messageRepository.findByChat_ChatIdAndDeletedAtIsNullOrderByCreatedAtDesc(id, pageable);
     }
 
 }

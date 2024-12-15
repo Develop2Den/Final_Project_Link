@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(pageable);
     }
 
-    @Scheduled(cron = "0 0/20 * * * *")
+    @Scheduled(cron = "0 0/5 * * * *")
     @Transactional
     public void removeUnverifiedUsers() {
         LocalDateTime now = LocalDateTime.now();

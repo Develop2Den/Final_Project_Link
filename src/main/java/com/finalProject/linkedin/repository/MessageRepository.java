@@ -4,9 +4,12 @@ import com.finalProject.linkedin.entity.Message;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
 
 
 @Repository
@@ -42,5 +45,10 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "AND m.deletedAt IS NULL")
     long countUnreadMessagesBetweenUsers(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
 
-    Page<Message> findByChat_ChatIdOrderByCreatedAtDesc(Long chatId, Pageable pageable);
+    @Modifying
+    @Query("UPDATE Message m SET m.deletedAt = :deletedAt WHERE m.chat.chatId = :chatId AND m.deletedAt IS NULL")
+    void markMessagesAsDeleted(@Param("chatId") Long chatId, @Param("deletedAt") LocalDateTime deletedAt);
+
+    Page<Message> findByChat_ChatIdAndDeletedAtIsNullOrderByCreatedAtDesc(Long chatId, Pageable pageable);
+
 }

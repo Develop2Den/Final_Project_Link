@@ -1,18 +1,20 @@
 package com.finalProject.linkedin.service.serviceImpl;
 
-import com.finalProject.linkedin.dto.request.chat.ChatReq;
-import com.finalProject.linkedin.dto.responce.chat.ChatResp;
 import com.finalProject.linkedin.entity.Chat;
+import com.finalProject.linkedin.exception.InvalidRequestException;
+import com.finalProject.linkedin.exception.NotFoundException;
 import com.finalProject.linkedin.repository.ChatRepository;
+import com.finalProject.linkedin.repository.MessageRepository;
+import com.finalProject.linkedin.repository.UserRepository;
 import com.finalProject.linkedin.service.serviceIR.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -20,24 +22,29 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
 
-    private final ModelMapper modelMapper;
     private final ChatRepository chatRepository;
+    private final UserRepository userRepository;
+    private final MessageRepository messageRepository;
 
     @Override
-    public ChatResp create(ChatReq chatReq) {
-        Chat chat = modelMapper.map(chatReq, Chat.class);
-        if (getIdFromEntity(chat) == 0L) {
-            Chat savedChat = chatRepository.save(chat);
-            return modelMapper.map(savedChat, ChatResp.class);
-        }
-        throw new RuntimeException("Chat already exist");
+    public Chat create(Chat chat) {
+        userVerification(chat.getSenderId());
+        userVerification(chat.getRecipientId());
+        Optional<Chat> chatExist = chatRepository.findChatByParticipants(chat.getSenderId(), chat.getRecipientId());
+        if (chatExist.isPresent())
+            throw new InvalidRequestException("Chat already exist ");
+        else
+            return chatRepository.save(chat);
     }
 
+    @Transactional
     @Override
     public boolean deleteById(Long id) {
-        if (chatRepository.existsById(id)) {
-            Chat chat = getOne(id);
+        Optional<Chat> chatExist = chatRepository.findById(id);
+        if (chatExist.isPresent()) {
+            Chat chat = chatExist.get();
             chat.setDeletedAt(LocalDateTime.now());
+            messageRepository.markMessagesAsDeleted(id, LocalDateTime.now());
             chatRepository.save(chat);
             return true;
         }
@@ -46,18 +53,19 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Chat getOne(long id) {
-        return chatRepository.findById(id).orElse(null);
+        Optional<Chat> chatExist = chatRepository.findById(id);
+        if (chatExist.isEmpty() || chatExist.get().getDeletedAt() != null)
+            throw new NotFoundException("Chat  not found with id= " + id);
+        return chatExist.get();
     }
 
     @Override
-    public List<ChatResp> findAll(Pageable pageable) {
-        return chatRepository.findAll(pageable).map(chat -> modelMapper.map(chat, ChatResp.class)).toList();
+    public Page<Chat> findAll(Pageable pageable) {
+        return chatRepository.findAll(pageable);
     }
 
-
-
-    public long getIdFromEntity(Chat chat) {
-        Optional<Chat> chat1 = chatRepository.findAll().stream().filter(c -> c.equals(chat)).findFirst();
-        return chat1.map(Chat::getChatId).orElse(0L);
+    private void userVerification(Long userId) throws NotFoundException {
+        if (!userRepository.existsById(userId)) throw new NotFoundException("User not found id= " + userId);
     }
+
 }

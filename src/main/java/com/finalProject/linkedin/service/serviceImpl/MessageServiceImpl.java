@@ -92,7 +92,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Message createAndSendOrNotification(Message message) {
+    public Message createAndSendOrNotification(Message message, int path) {
         userVerification(message.getSenderId());
         userVerification(message.getRecipientId());
         checkChat(message);
@@ -100,18 +100,40 @@ public class MessageServiceImpl implements MessageService {
                 () -> new NotFoundException("Chat not found with id " + message.getChatId()));
         chat.setUpdatedAt(LocalDateTime.now());
         chatRepository.save(chat);
-        String recipientId = message.getRecipientId().toString();
-        if (simpUserRegistry.getUser(recipientId) != null) {
-            messagingTemplate.convertAndSendToUser(
-                    recipientId,            // identity sender
-                    "/queue/messages",      // channel
-                    message                 // message
-            );
-        } else {
-            createNotification(message);
+        messageRepository.save(message);
+        switch (path) {
+            case 1,2: {
+                if (checkRecipientConnect(message))
+                    sendMessageDirectly(message);
+                else createNotification(message);
+                break;
+            }
+            case 3: {
+                if (checkRecipientConnect(message))
+                    createNotification(message);
+                break;
+            }
+            default:
+                throw new NotFoundException("Not found logic for path from controller path= " + path);
         }
-        return messageRepository.save(message);
+        return message;
     }
+
+    private void sendMessageDirectly(Message message) {
+        String recipientId = message.getRecipientId().toString();
+        messagingTemplate.convertAndSendToUser(
+                recipientId,            // identity sender
+                "/queue/messages",      // channel
+                message                 // message
+        );
+
+    }
+
+    private boolean checkRecipientConnect(Message message) {
+        String recipientId = message.getRecipientId().toString();
+        return simpUserRegistry.getUser(recipientId) != null;
+    }
+
 
     public void checkChat(Message message) {
         System.out.println("Message Service impl - check Chat begin" + message);
@@ -127,8 +149,9 @@ public class MessageServiceImpl implements MessageService {
 
     private void createNotification(Message message) {
         System.out.println("User not connected -> create notification ");
+        System.out.println(message.getMessageId());
         notificationRepository.save(new Notification(
-                LocalDateTime.now(),
+                message.getChatId(),
                 (message.getContent().length() > 20) ? message.getContent().substring(0, 20) : message.getContent(),
                 NotificationType.MESSAGE,
                 message.getRecipientId()
@@ -148,8 +171,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Page<Message> getMessagesByChatId(Long id, Pageable pageable) {
         chatVerification(id);
-        return messageRepository.findByChat_ChatIdOrderByCreatedAtDesc(id, pageable);
+        return messageRepository.findByChat_ChatIdAndDeletedAtIsNullOrderByCreatedAtDesc(id, pageable);
     }
+
 }
-
-

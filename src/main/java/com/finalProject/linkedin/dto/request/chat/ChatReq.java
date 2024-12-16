@@ -8,7 +8,6 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChatReq {
 
-    long id;
     @NotNull(message = "Sender field must be filled ")
     private Long senderId;
 

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class NotificationRes {
 
     private Long notificationId;
+    private Long eventId;
     private Long recipientId;
     private String message;
     private NotificationType notificationType;

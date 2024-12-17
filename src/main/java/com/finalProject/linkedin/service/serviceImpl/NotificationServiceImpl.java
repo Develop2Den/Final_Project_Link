@@ -1,10 +1,8 @@
 package com.finalProject.linkedin.service.serviceImpl;
 
 
-import com.finalProject.linkedin.dto.responce.notification.NotificationRes;
 import com.finalProject.linkedin.entity.Notification;
 import com.finalProject.linkedin.exception.NotFoundException;
-import com.finalProject.linkedin.mapper.NotificationMapper;
 import com.finalProject.linkedin.repository.NotificationRepository;
 import com.finalProject.linkedin.service.serviceIR.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class
 NotificationServiceImpl implements NotificationService {
-    private final NotificationMapper notificationMapper;
     private final NotificationRepository notificationRepository;
 
     @Override

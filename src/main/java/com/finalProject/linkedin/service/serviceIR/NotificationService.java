@@ -1,23 +1,24 @@
 package com.finalProject.linkedin.service.serviceIR;
 
-import com.finalProject.linkedin.dto.request.notification.NotificationReq;
-import com.finalProject.linkedin.dto.responce.notification.NotificationRes;
+import com.finalProject.linkedin.entity.Notification;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 public interface NotificationService {
-    NotificationRes create(NotificationReq notificationReq);
+    Notification create(Notification notification);
 
     boolean deleteById(Long id);
 
-    List<NotificationRes> findAll(Pageable pageable);
+    Page<Notification> findAll(Pageable pageable);
 
-    long countByRecipientIdReadFalse(Long recipientId);
+    Long countByRecipientIdReadFalse(Long recipientId);
 
-    List<NotificationRes> findByIdAndReadFalse(Pageable pageable, Long recipientId);
+    Page<Notification> findByIdAndReadFalse(Long recipientId, Pageable pageable);
 
-    NotificationRes getNotificationById(Long id);
+    Notification getNotificationById(Long id);
 
     boolean readTrue(Long id);
+
+    Page<Notification> findByIdAndDeleteFalse(Long id, Pageable pageable);
 }

@@ -15,6 +15,10 @@ public class NotificationReq {
 
     @NotNull(message = "Recipient field must be filled ")
     private Long recipientId;
+    @NotNull(message = "Author field must be filled ")
+    private Long authorId;
+    @NotNull(message = "Event field must be filled ")
+    private Long eventId;
     @NotBlank(message = "Message can't be empty")
     private String message;
     private NotificationType notificationType;

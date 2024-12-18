@@ -58,8 +58,8 @@ public class MessageController {
 
     @MessageMapping("/chat/{chatId}/send")
     @SendTo("/queue/messages/{chatId}")
-    public ResponseEntity<MessageResp> sendMessage(@DestinationVariable String chatId, MessageChatIdReq messageChatIdReq) {
-        return ResponseEntity.ok(messageMapper.toMessageResp(messageService.createAndSendOrNotification(messageMapper.toMessage(messageChatIdReq), 3)));
+    public MessageResp sendMessage(@DestinationVariable String chatId, MessageChatIdReq messageChatIdReq) {
+        return messageMapper.toMessageResp(messageService.createAndSendOrNotification(messageMapper.toMessage(messageChatIdReq), 3));
     }
 
     @Operation(summary = "Mark message as deleted",

@@ -20,8 +20,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notification {
-    public Notification(Long eventId, String message, NotificationType notificationType, Long recipientId) {
+    public Notification(Long eventId, Long authorId, String message, NotificationType notificationType, Long recipientId) {
         this.eventId = eventId;
+        this.authorId = authorId;
         this.message = message;
         this.notificationType = notificationType;
         this.recipientId = recipientId;
@@ -32,8 +33,10 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notification_id")
     private Long notificationId;
-    @Column (name = "event_id")
+    @Column(name = "event_id")
     private Long eventId;
+    @Column(name = "author_id")
+    private Long authorId;
     @Column(name = "recipient_id")
     private Long recipientId;
     @Column(name = "message")
@@ -48,5 +51,7 @@ public class Notification {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipient_id", insertable = false, updatable = false)
     private User recipient;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", insertable = false, updatable = false)
+    private User author;
 }

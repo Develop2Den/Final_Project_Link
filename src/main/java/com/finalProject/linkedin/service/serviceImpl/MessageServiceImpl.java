@@ -102,14 +102,14 @@ public class MessageServiceImpl implements MessageService {
         chatRepository.save(chat);
         messageRepository.save(message);
         switch (path) {
-            case 1,2: {
-                if (checkRecipientConnect(message))
+            case 1, 2: {
+                if (checkRecipientNotConnected(message))
                     sendMessageDirectly(message);
                 else createNotification(message);
                 break;
             }
             case 3: {
-                if (checkRecipientConnect(message))
+                if (checkRecipientNotConnected(message))
                     createNotification(message);
                 break;
             }
@@ -129,9 +129,9 @@ public class MessageServiceImpl implements MessageService {
 
     }
 
-    private boolean checkRecipientConnect(Message message) {
+    private boolean checkRecipientNotConnected(Message message) {
         String recipientId = message.getRecipientId().toString();
-        return simpUserRegistry.getUser(recipientId) != null;
+        return simpUserRegistry.getUser(recipientId) == null;
     }
 
 
@@ -149,9 +149,9 @@ public class MessageServiceImpl implements MessageService {
 
     private void createNotification(Message message) {
         System.out.println("User not connected -> create notification ");
-        System.out.println(message.getMessageId());
         notificationRepository.save(new Notification(
                 message.getChatId(),
+                message.getSenderId(),
                 (message.getContent().length() > 20) ? message.getContent().substring(0, 20) : message.getContent(),
                 NotificationType.MESSAGE,
                 message.getRecipientId()

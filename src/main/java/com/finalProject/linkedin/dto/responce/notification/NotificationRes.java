@@ -11,6 +11,8 @@ public class NotificationRes {
 
     private Long notificationId;
     private Long eventId;
+    private String nameSender;
+    private String surnameSender;
     private Long recipientId;
     private String message;
     private NotificationType notificationType;

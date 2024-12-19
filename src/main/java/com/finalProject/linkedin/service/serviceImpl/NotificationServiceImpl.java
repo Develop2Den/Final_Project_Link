@@ -4,6 +4,7 @@ package com.finalProject.linkedin.service.serviceImpl;
 import com.finalProject.linkedin.entity.Notification;
 import com.finalProject.linkedin.exception.NotFoundException;
 import com.finalProject.linkedin.repository.NotificationRepository;
+import com.finalProject.linkedin.repository.UserRepository;
 import com.finalProject.linkedin.service.serviceIR.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +20,13 @@ import java.time.LocalDateTime;
 public class
 NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Notification create(Notification notification) {
-        return notificationRepository.save(notification);
+        notificationRepository.save(notification);
+        notification.setAuthor(userRepository.getReferenceById(notification.getAuthorId()));
+        return notification;
     }
 
     @Override

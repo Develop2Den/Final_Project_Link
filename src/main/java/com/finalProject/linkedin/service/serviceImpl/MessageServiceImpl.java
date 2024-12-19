@@ -104,8 +104,8 @@ public class MessageServiceImpl implements MessageService {
         switch (path) {
             case 1, 2: {
                 if (checkRecipientNotConnected(message))
-                    sendMessageDirectly(message);
-                else createNotification(message);
+                    createNotification(message);
+                else sendMessageDirectly(message);
                 break;
             }
             case 3: {

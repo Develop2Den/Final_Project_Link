@@ -13,5 +13,8 @@ public interface NotificationMapper {
     @Mapping(target = "read", constant = "false")
     Notification toNotification(NotificationReq notificationReq);
 
+
+    @Mapping(target = "nameSender", expression = "java(notification.getAuthor().getProfile().getName())")
+    @Mapping(target = "surnameSender", expression = "java(notification.getAuthor().getProfile().getSurname())")
     NotificationRes toNotificationRes(Notification notification);
 }

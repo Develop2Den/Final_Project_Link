@@ -1,31 +1,47 @@
 package com.finalProject.linkedin.service.serviceImpl;
 
-import com.finalProject.linkedin.dto.request.comment.CreateCommentReq;
-import com.finalProject.linkedin.dto.responce.comment.CreateCommentRes;
 import com.finalProject.linkedin.entity.Comment;
+import com.finalProject.linkedin.entity.Notification;
+import com.finalProject.linkedin.entity.Post;
 import com.finalProject.linkedin.exception.NotFoundException;
-import com.finalProject.linkedin.mapper.CommentMapper;
 import com.finalProject.linkedin.repository.CommentRepository;
+import com.finalProject.linkedin.repository.NotificationRepository;
+import com.finalProject.linkedin.repository.PostRepository;
 import com.finalProject.linkedin.service.serviceIR.CommentService;
+import com.finalProject.linkedin.utils.enums.NotificationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-    private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
+    private final NotificationRepository notificationRepository;
+    private final PostRepository postRepository;
 
     @Override
-    public CreateCommentRes create(CreateCommentReq createCommentReq) {
-        return commentMapper.toCreateCommentRes(commentRepository.save(commentMapper.toComment(createCommentReq)));
+    public Comment create(Comment comment) {
+        createNotification(comment);
+        return commentRepository.save(comment);
+    }
+
+    private void createNotification(Comment comment) {
+        Post post = postRepository.findByPostId(comment.getPostId())
+                .orElseThrow(() -> new NotFoundException("Post not found with id " + comment.getPostId()));
+        notificationRepository.save(new Notification(
+                comment.getPostId(),
+                comment.getAuthorId(),
+                (comment.getContent().length() > 20) ? comment.getContent().substring(0, 20) : comment.getContent(),
+                NotificationType.COMMENT,
+                post.getAuthorId()
+        ));
     }
 
     @Override
@@ -39,13 +55,18 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public List<CreateCommentRes> findAll(Long postId, Pageable pageable) {
-        return commentRepository.findByPostIdAndDeletedAtIsNull(postId, pageable).map(commentMapper::toCreateCommentRes).toList();
+    public Page<Comment> findAllByPost(Long postId, Pageable pageable) {
+        return commentRepository.findByPostIdAndDeletedAtIsNullOrderByCreatedAtDesc(postId, pageable);
     }
 
     @Override
     public long countByPostId(Long postId) {
-        return commentRepository.countByPostIdAndDeletedAtIsNull(postId);
+        return commentRepository.countByPostIdAndDeletedAtIsNullOrderByCreatedAtDesc(postId);
+    }
+
+    @Override
+    public Page<Comment> findAll(Pageable pageable) {
+        return commentRepository.findAll(pageable);
     }
 
 }

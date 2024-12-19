@@ -1,18 +1,19 @@
 package com.finalProject.linkedin.service.serviceIR;
 
-import com.finalProject.linkedin.dto.request.comment.CreateCommentReq;
-import com.finalProject.linkedin.dto.responce.comment.CreateCommentRes;
+import com.finalProject.linkedin.entity.Comment;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 public interface CommentService {
 
-    CreateCommentRes create(CreateCommentReq createCommentReq);
+    Comment create(Comment comment);
 
     boolean deleteById(Long id);
 
-    List<CreateCommentRes> findAll(Long postId, Pageable pageable);
+    Page<Comment> findAllByPost(Long postId, Pageable pageable);
 
     long countByPostId(Long postId);
+
+    Page<Comment> findAll(Pageable pageable);
 }

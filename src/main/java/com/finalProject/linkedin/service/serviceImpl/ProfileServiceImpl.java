@@ -77,6 +77,8 @@ public class ProfileServiceImpl implements ProfileService {
         existingProfile.setPosition(createProfileReq.position());
         existingProfile.setAddress(createProfileReq.address());
         existingProfile.setStatus(createProfileReq.status());
+        existingProfile.setHeaderPhotoUrl(createProfileReq.headerPhotoUrl());
+
 
         Profile updatedProfile = profileRepository.save(existingProfile);
         return profileMapper.toCreateProfileResp(updatedProfile);

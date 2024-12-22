@@ -26,7 +26,7 @@ public class PostServiceImpl implements PostService {
     public CreatePostResponse creatPost(CreatePostReq createPostReq) {
         Post post = postMapper.toPost(createPostReq);
         if (post.getPhotoUrl() == null || post.getPhotoUrl().isEmpty()) {
-            post.setPhotoUrl("https://img.freepik.com/free-photo/abstract-surface-textures-white-concrete-stone-wall_74190-8189.jpg");
+            post.setPhotoUrl("");
         }
         if (!userRepository.existsById(post.getAuthorId())) {
             throw new NotFoundException("Not found user with id : " + post.getAuthorId());

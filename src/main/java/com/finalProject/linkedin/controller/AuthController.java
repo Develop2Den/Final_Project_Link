@@ -16,10 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-
 
 @Slf4j
 @RestController
@@ -50,39 +52,66 @@ public class AuthController {
     }
 
     @PostMapping("/auth")
+    @Operation(summary = "Register new user", description = "Registers a new user and sends confirmation email")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "User registered successfully"),
+            @ApiResponse(responseCode = "400", description = "User already exists"),
+            @ApiResponse(responseCode = "409", description = "Incomplete registration")
+    })
     public ResponseEntity<String> register(@RequestBody @Valid CreateUserReq createUserRequest) {
+        Optional<User> existingUser = userServiceImpl.findUserByEmail(createUserRequest.getEmail());
 
-        if (userServiceImpl.findUserByEmail(createUserRequest.getEmail()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User exists");
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+
+            if (user.getIsVerified()) {
+                return ResponseEntity
+                  .status(HttpStatus.BAD_REQUEST)
+                  .body("User exists");
+            }
+
+            return ResponseEntity
+                   .status(HttpStatus.CONFLICT)
+                   .body("You haven't completed registration! Please check your email for confirmation.");
         }
-        log.info("Реєстрація користувача з паролем: {}", createUserRequest.getPassword().getPassword());
+
+        log.info("Registering user with email: {}", createUserRequest.getEmail());
 
         User newUser = new User(
                 createUserRequest.getEmail(),
                 passwordEncoder.encode(createUserRequest.getPassword().getPassword())
         );
         userServiceImpl.save(newUser);
-        log.info("Успішно зареєстровано з електронною адресою: {}", createUserRequest.getEmail());
 
         String token = confirmationTokenServiceImpl.createToken(newUser);
         String confirmationLink = APP_URL + "/confirm?token=" + token;
+
         authEmailServiceImpl.sendConfirmationEmail(newUser.getEmail(), confirmationLink);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Користувач зареєстрований. Перевірте свою електронну пошту для підтвердження.");
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("User registered. Check your email for confirmation.");
     }
 
+
     @GetMapping("/confirm")
+    @Operation(summary = "Confirm account", description = "Confirms the user's account using the token sent in the confirmation email")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Account confirmed successfully"),
+            @ApiResponse(responseCode = "400", description = "Token not found or expired")
+    })
     public String confirmAccount(@RequestParam("token") String token) {
-        log.info("Підтвердження облікового запису за допомогою токена: {}", token);
+        log.info("Confirming account with token: {}", token);
         Optional<ConfirmationToken> confirmationToken = confirmationTokenServiceImpl.findByTokenAndTokenType(token, TokenType.REGISTRATION);
 
         if (confirmationToken.isPresent()) {
             if (confirmationToken.get().getConfirmedAt() != null) {
-                return "Акаунт вже підтверджено!";
+                return "Account already confirmed!";
             }
 
             LocalDateTime expiresAt = confirmationToken.get().getExpiresAt();
             if (expiresAt.isBefore(LocalDateTime.now())) {
-                return "Термін дії токена минув!";
+                return "Token has expired!";
             }
 
             confirmationTokenServiceImpl.setConfirmedAt(token, TokenType.REGISTRATION);
@@ -90,16 +119,20 @@ public class AuthController {
             User user = confirmationToken.get().getUser();
             user.setIsVerified(true);
             userServiceImpl.save(user);
-            return "Акаунт успішно підтверджено! Можете закрити сторінку!";
+            return "Account confirmed successfully! You may close this page.";
         } else {
-            return "Токена не знайдено!";
+            return "Token not found!";
         }
     }
 
     @PostMapping("/password-forgot")
+    @Operation(summary = "Forgot password", description = "Sends a password reset email to the user")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Password reset email sent"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
     public ResponseEntity<String> processForgotPassword(@RequestParam("email") String email) {
-
-        log.warn("Імейл: " + email);
+        log.warn("Email: " + email);
         Optional<User> user = userServiceImpl.findUserByEmail(email);
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
@@ -109,14 +142,18 @@ public class AuthController {
         String confirmationLink = FRONT_URL + "/password-reset?token=" + token;
         authEmailServiceImpl.sendResetEmail(user.get().getEmail(), confirmationLink);
 
-        return ResponseEntity.ok("Лист для скидання пароля надіслано");
+        return ResponseEntity.ok("Password reset email sent");
     }
 
     @PostMapping("/password-reset")
+    @Operation(summary = "Reset password", description = "Resets the user's password using the provided token")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Password reset successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid or expired token")
+    })
     public ResponseEntity<String> resetPassword(@RequestParam("token") String token, @RequestBody PasswordValidator password) {
-
-        log.warn("Спроба скинути пароль за допомогою маркера: {}", token);
-        log.warn("Пароль: " + password.getPassword());
+        log.warn("Attempting password reset with token: {}", token);
+        log.warn("Password: " + password.getPassword());
 
         ConfirmationToken resetToken = confirmationTokenServiceImpl.findByTokenAndTokenType(token, TokenType.PASSWORD_RESET)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid or expired token"));
@@ -131,9 +168,9 @@ public class AuthController {
 
         confirmationTokenServiceImpl.deleteConfirmationToken(resetToken.getToken(), TokenType.PASSWORD_RESET);
 
-        log.info("Пароль успішно скинуто для користувача: {}", user.getEmail());
+        log.info("Password successfully reset for user: {}", user.getEmail());
 
-        return ResponseEntity.ok("Пароль успішно скинуто");
+        return ResponseEntity.ok("Password reset successfully");
     }
 
 }

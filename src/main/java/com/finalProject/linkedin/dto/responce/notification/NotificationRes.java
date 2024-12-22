@@ -1,17 +1,22 @@
 package com.finalProject.linkedin.dto.responce.notification;
 
 
+import com.finalProject.linkedin.utils.enums.NotificationType;
 import lombok.Data;
-import lombok.NonNull;
+
+import java.time.LocalDateTime;
 
 @Data
 public class NotificationRes {
 
-    @NonNull
-    private Long id;
-    @NonNull
+    private Long notificationId;
+    private Long eventId;
+    private String nameSender;
+    private String surnameSender;
+    private Long recipientId;
     private String message;
-    private String notificationType;
+    private NotificationType notificationType;
+    private LocalDateTime createdAt;
     private Boolean read;
 
 }

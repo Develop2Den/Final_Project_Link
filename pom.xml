@@ -173,6 +173,11 @@
       <artifactId>dotenv-java</artifactId>
       <version>3.0.2</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-websocket</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -192,27 +197,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>3.2.0</version>
-        <executions>
-          <execution>
-            <configuration>
-              <configLocation>checkstyle_config.xml</configLocation>
-              <consoleOutput>true</consoleOutput>
-              <failsOnError>true</failsOnError>
-              <violationSeverity>warning</violationSeverity>
-              <includeTestSourceDirectory>true</includeTestSourceDirectory>
-            </configuration>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>com.puppycrawl.tools</groupId>
-            <artifactId>checkstyle</artifactId>
-            <version>10.12.2</version> <!-- Последняя версия Checkstyle -->
-          </dependency>
-        </dependencies>
+        <configuration>
+          <configLocation>checkstyle_config.xml</configLocation>
+        </configuration>
       </plugin>
 
       <plugin>

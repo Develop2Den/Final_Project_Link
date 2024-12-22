@@ -9,11 +9,12 @@ import com.finalProject.linkedin.repository.ProfileRepository;
 import com.finalProject.linkedin.service.serviceIR.ProfileService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * description
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
  * @author Alexander Isai on 10.10.2024.
  */
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
 
@@ -39,18 +41,29 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public CreateProfileResp getProfileById(Long profileId) {
-        Profile profile = profileRepository.findById(profileId)
+        Profile profile = profileRepository.findByProfileIdAndDeletedAtIsNull(profileId)
                 .orElseThrow(() -> new NotFoundException("Profile not found with id " + profileId));
         return profileMapper.toCreateProfileResp(profile);
     }
 
     @Override
-    public Page<CreateProfileResp> getAllProfiles(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Profile> profilePage = profileRepository.findAll(pageable);
-        return profilePage.map(profileMapper::toCreateProfileResp);
+    public CreateProfileResp getProfileByUserId(Long userId) {
+        Profile profile = profileRepository.findByUserIdAndDeletedAtIsNull(userId)
+                .orElseThrow(() -> new NotFoundException("Profile not found with id " + userId));
+        return profileMapper.toCreateProfileResp(profile);
     }
-
+    @Override
+    public List<CreateProfileResp> getAllProfiles(Integer page, Integer limit, String email, String name, String surname) {
+        log.info("Fetching profiles with page={}, limit={}", page, limit);
+        try {
+            List<Profile> profiles = profileRepository.findAll(PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "profileId"))).getContent();
+            log.info("Fetched profiles: {}", profiles);
+            return profiles.stream().map(profileMapper::toCreateProfileResp).toList();
+        } catch (Exception e) {
+            log.error("Error fetching profiles", e);
+            throw e;
+        }
+    }
     @Override
     public CreateProfileResp updateProfile(Long profileId, CreateProfileReq createProfileReq) {
         Profile existingProfile = profileRepository.findById(profileId)
@@ -62,6 +75,8 @@ public class ProfileServiceImpl implements ProfileService {
         existingProfile.setPosition(createProfileReq.position());
         existingProfile.setAddress(createProfileReq.address());
         existingProfile.setStatus(createProfileReq.status());
+        existingProfile.setHeaderPhotoUrl(createProfileReq.headerPhotoUrl());
+
 
         Profile updatedProfile = profileRepository.save(existingProfile);
         return profileMapper.toCreateProfileResp(updatedProfile);

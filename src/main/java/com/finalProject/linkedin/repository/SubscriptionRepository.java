@@ -21,17 +21,27 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
     @Query("SELECT p " +
             "FROM Subscription s " +
             "JOIN Profile p ON s.followerId = p.userId " +
-            "WHERE s.followingId = :whoGetSubscribedId AND p.deletedAt IS NULL")
+            "WHERE s.followingId = :whoGetSubscribedId " +
+            "AND s.deletedAt IS NULL " +
+            "AND p.deletedAt IS NULL")
     Page<Profile> findAllSubscribers(@Param("whoGetSubscribedId") Long whoGetSubscribedId, Pageable pageable);
 
     @Query("SELECT p " +
             "FROM Subscription s " +
             "JOIN Profile p ON s.followingId = p.userId " +
-            "WHERE s.followerId = :followerId AND p.deletedAt IS NULL")
+            "WHERE s.followerId = :followerId " +
+            "AND s.deletedAt IS NULL " +
+            "AND p.deletedAt IS NULL")
     Page<Profile> findAllSubscriptions(@Param("followerId") Long followerId, Pageable pageable);
 
+    @Query("SELECT COUNT(s) " +
+            "FROM Subscription s " +
+            "WHERE s.followingId = :userId AND s.deletedAt IS NULL")
     Optional<Long> countByFollowingId(Long userId);
 
+    @Query("SELECT COUNT(s) " +
+            "FROM Subscription s " +
+            "WHERE s.followerId = :userId AND s.deletedAt IS NULL")
     Optional<Long> countByFollowerId(Long userId);
 
 }

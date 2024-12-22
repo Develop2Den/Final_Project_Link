@@ -102,4 +102,11 @@ public class NotificationController {
         else return ResponseEntity.notFound().build();
     }
 
+    @PutMapping("/read")
+    @Operation(summary = "mark notifications as read", description = "mark notifications as read by its ID")
+    @ApiResponse(responseCode = "200")
+    public ResponseEntity<Void> setMessagesRead(@RequestBody List<Long> ids) {
+        if (notificationService.readTrue(ids)) return ResponseEntity.ok().build();
+        else return ResponseEntity.notFound().build();
+    }
 }

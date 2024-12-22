@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -50,7 +51,7 @@ NotificationServiceImpl implements NotificationService {
 
     @Override
     public Page<Notification> findByIdAndReadFalse(Long recipientId, Pageable pageable) {
-        return notificationRepository.findByRecipientIdAndDeletedAtIsNullAndReadFalseOrderByCreatedAtDesc(recipientId,pageable);
+        return notificationRepository.findByRecipientIdAndDeletedAtIsNullAndReadFalseOrderByCreatedAtDesc(recipientId, pageable);
     }
 
     @Override
@@ -70,8 +71,18 @@ NotificationServiceImpl implements NotificationService {
 
     @Override
     public Page<Notification> findByIdAndDeleteFalse(Long id, Pageable pageable) {
-        return notificationRepository.findByRecipientIdAndDeletedAtIsNullOrderByCreatedAtDesc(id,pageable);
+        return notificationRepository.findByRecipientIdAndDeletedAtIsNullOrderByCreatedAtDesc(id, pageable);
     }
 
+    @Override
+    public boolean readTrue(List<Long> ids) {
+        List<Notification> notifications = notificationRepository.findAllById(ids);
+        if (notifications.isEmpty()) {
+            throw new NotFoundException("No notification found with provided ids");
+        }
+        notifications.forEach(notification -> notification.setRead(true));
+        notificationRepository.saveAll(notifications);
+        return true;
+    }
 
 }

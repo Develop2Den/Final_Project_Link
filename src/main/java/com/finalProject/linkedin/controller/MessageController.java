@@ -107,4 +107,23 @@ public class MessageController {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(messageService.getMessagesByChatId(id, pageable).map(messageMapper::toMessageResp).toList());
     }
+
+    @PutMapping("/read/{id}")
+    @Operation(summary = "mark message as read", description = "mark message as read by its ID")
+    @ApiResponse(responseCode = "200")
+    public ResponseEntity<Void> setMessageRead(@PathVariable Long id) {
+        if (messageService.readTrue(id)) return ResponseEntity.ok().build();
+        else return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/read")
+    @Operation(summary = "mark messages as read", description = "mark messages as read by its ID")
+    @ApiResponse(responseCode = "200")
+    public ResponseEntity<Void> setMessagesRead(@RequestBody List<Long> ids) {
+        if (messageService.readTrue(ids)) return ResponseEntity.ok().build();
+        else return ResponseEntity.notFound().build();
+    }
+
+
+
 }

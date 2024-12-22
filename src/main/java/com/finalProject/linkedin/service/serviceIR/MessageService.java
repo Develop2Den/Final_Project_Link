@@ -22,4 +22,7 @@ public interface MessageService {
 
     Page<Message> getMessagesByChatId(Long id, Pageable pageable);
 
+    boolean readTrue(Long Id);
+
+    boolean readTrue(List<Long> ids);
 }

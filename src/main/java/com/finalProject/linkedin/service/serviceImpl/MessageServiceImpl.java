@@ -174,4 +174,25 @@ public class MessageServiceImpl implements MessageService {
         return messageRepository.findByChat_ChatIdAndDeletedAtIsNullOrderByCreatedAtDesc(id, pageable);
     }
 
+    @Override
+    public boolean readTrue(Long id) {
+       Message message = messageRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Message not found with id " + id));
+        message.setRead(true);
+        messageRepository.save(message);
+        return true;
+    }
+
+    @Override
+    public boolean readTrue(List<Long> ids) {
+        List<Message> messages = messageRepository.findAllById(ids);
+        if (messages.isEmpty()) {
+            throw new NotFoundException("No messages found with provided ids");
+        }
+        messages.forEach(message -> message.setRead(true));
+        messageRepository.saveAll(messages);
+        return true;
+    }
+
+
 }

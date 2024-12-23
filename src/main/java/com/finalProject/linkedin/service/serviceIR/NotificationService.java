@@ -4,6 +4,8 @@ import com.finalProject.linkedin.entity.Notification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 
 public interface NotificationService {
     Notification create(Notification notification);
@@ -21,4 +23,6 @@ public interface NotificationService {
     boolean readTrue(Long id);
 
     Page<Notification> findByIdAndDeleteFalse(Long id, Pageable pageable);
+
+    boolean readTrue(List<Long> ids);
 }

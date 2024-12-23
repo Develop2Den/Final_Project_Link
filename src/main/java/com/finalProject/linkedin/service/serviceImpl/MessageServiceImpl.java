@@ -96,10 +96,7 @@ public class MessageServiceImpl implements MessageService {
         userVerification(message.getSenderId());
         userVerification(message.getRecipientId());
         checkChat(message);
-        Chat chat = chatRepository.findById(message.getChatId()).orElseThrow(
-                () -> new NotFoundException("Chat not found with id " + message.getChatId()));
-        chat.setUpdatedAt(LocalDateTime.now());
-        chatRepository.save(chat);
+
         messageRepository.save(message);
         switch (path) {
             case 1, 2: {
@@ -123,7 +120,7 @@ public class MessageServiceImpl implements MessageService {
         String recipientId = message.getRecipientId().toString();
         messagingTemplate.convertAndSendToUser(
                 recipientId,            // identity sender
-                "/queue/messages",      // channel
+                "/queue/messages"+ message.getChatId(),      // channel
                 message                 // message
         );
 
